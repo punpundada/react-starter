@@ -1,18 +1,20 @@
-import React from "react";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+} from "@/components/ui/sidebar";
 import { Outlet } from "react-router-dom";
 import AppSidebar from "./app-sidebar";
+import React from "react";
 
-const Layout = () => {
+const Layout = React.memo(() => {
   return (
-    <SidebarProvider defaultOpen>
-        <AppSidebar />
-      <main>
-        <SidebarTrigger/>
-        <Outlet />
-      </main>
+    <SidebarProvider defaultOpen className="h-screen">
+      <AppSidebar />
+      <SidebarInset className="h-full">
+          <Outlet />
+      </SidebarInset>
     </SidebarProvider>
   );
-};
+});
 
 export default Layout;

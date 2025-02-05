@@ -54,14 +54,6 @@ function App() {
   return (
     <>
       <RouterProvider router={router} />
-      {/* <BrowserRouter>
-        <Routes>
-          <Route element={<Layout/>}>
-            <Route element={<Dashboard/>} index />
-            <Route element={<Demo/>} path='demo' />
-          </Route>
-        </Routes>
-      </BrowserRouter> */}
     </>
   );
 }

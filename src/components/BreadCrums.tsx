@@ -17,7 +17,7 @@ export interface Breadcrums {
 
 const BreadCrums = React.memo(({ list }: Breadcrums) => {
   return (
-    <Breadcrumb className="pt-1">
+    <Breadcrumb className="">
       <BreadcrumbList>
         {list.map((Item, index) => {
           return index + 1 != list.length ? (

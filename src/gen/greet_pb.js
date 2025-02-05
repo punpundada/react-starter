@@ -11,16 +11,6 @@
 /* eslint-disable */
 // @ts-nocheck
 
-var jspb = require('google-protobuf');
-var goog = jspb;
-var global =
-    (typeof globalThis !== 'undefined' && globalThis) ||
-    (typeof window !== 'undefined' && window) ||
-    (typeof global !== 'undefined' && global) ||
-    (typeof self !== 'undefined' && self) ||
-    (function () { return this; }).call(null) ||
-    Function('return this')();
-
 goog.exportSymbol('proto.greet.GreetRequest', null, global);
 goog.exportSymbol('proto.greet.GreetResponse', null, global);
 /**
@@ -355,4 +345,3 @@ proto.greet.GreetResponse.prototype.setGreeting = function(value) {
 };
 
 
-goog.object.extend(exports, proto.greet);

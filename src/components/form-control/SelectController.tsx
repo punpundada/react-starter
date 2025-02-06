@@ -54,8 +54,11 @@ const SelectController = <T extends FieldValues, O extends FieldValues>({
             <SelectContent>
               {options.map((x) => {
                 return (
-                  <SelectItem key={x.id} value={returnVal ? returnVal : x.id}>
-                    {listDisplay ? x[listDisplay] : x.name}
+                  <SelectItem
+                    key={x.id}
+                    value={returnVal ? returnVal : x.value}
+                  >
+                    {listDisplay ? x[listDisplay] : x.label}
                   </SelectItem>
                 );
               })}

@@ -7,6 +7,9 @@ import PageLayout from "@/layout/PageLayout";
 import { DemandFilter, DemandFilterSchema } from "@/type/demand/demand";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { MultiSelect } from "@/components/form-control/multi-select";
+import DateController from "@/components/form-control/DateController";
+import SelectController from "@/components/form-control/SelectController";
 
 const breadcrumList = [
   {
@@ -30,7 +33,7 @@ const Demand = () => {
       authType: "",
       customerCode: "",
       date: new Date(),
-      DateRegistred: new Date(),
+      DateRegistred: null,
       dateRequiredBy: new Date(),
       demandNo: "",
       demandQuantity: 0,
@@ -70,6 +73,7 @@ const Demand = () => {
                 placeholder="Customer Code"
                 label="Customer Code"
                 type="number"
+                maxLength={4}
               />
               <InputController
                 control={form.control}
@@ -77,10 +81,11 @@ const Demand = () => {
                 placeholder="Enter Demand Number"
                 label="Demand Number"
               />
-              <InputController
+              <DateController
                 control={form.control}
+                hourCycle={24}
                 name="date"
-                placeholder="Date"
+                placeholder="Enter Date"
                 label="Date"
               />
               <InputController
@@ -89,11 +94,12 @@ const Demand = () => {
                 placeholder="Date Rquired By"
                 label="Date Required By"
               />
-              <InputController
-                control={form.control}
+              <DateController
                 name="DateRegistred"
-                placeholder="Date Registred"
-                label="Date Registred"
+                control={form.control}
+                placeholder="Enter Date Time Registred"
+                label="Date Time Registred"
+                hourCycle={24}
               />
               <InputController
                 control={form.control}
@@ -113,6 +119,47 @@ const Demand = () => {
                   );
                 }}
               />
+              <div className="h-10">
+                <MultiSelect
+                  onValueChange={(e) => {
+                    console.log(e);
+                  }}
+                  options={[
+                    { label: "akjdnakn akndkan aksjdnas", value: "1" },
+                    { label: "2asndas anda ad", value: "2" },
+                    { label: "3", value: "3" },
+                    { label: "4", value: "4" },
+                    { label: "5", value: "5" },
+                    { label: "6", value: "6" },
+                    { label: "7", value: "7" },
+                    { label: "8", value: "8" },
+                    { label: "9", value: "9" },
+                    { label: "10", value: "10" },
+                  ]}
+                  control={form.control}
+                  name="users"
+                  label="Users"
+                  placeholder="Select users"
+                />
+              </div>
+              <SelectController
+                control={form.control}
+                name="users"
+                options={[
+                  { label: "akjdnakn akndkan aksjdnas", value: "1" },
+                  { label: "2asndas anda ad", value: "2" },
+                  { label: "3", value: "3" },
+                  { label: "4", value: "4" },
+                  { label: "5", value: "5" },
+                  { label: "6", value: "6" },
+                  { label: "7", value: "7" },
+                  { label: "8", value: "8" },
+                  { label: "9", value: "9" },
+                  { label: "10", value: "10" },
+                ]}
+                label="Users"
+                placeHolder="Select user"
+              />
               {/* <DateController
                 control={form.control}
                 name="date"
@@ -122,7 +169,7 @@ const Demand = () => {
                 endMonth={new Date(2500)}
                 startMonth={new Date(1980)}
               /> */}
-              <div className="space-x-4 col-span-full flex justify-end">
+              <div className="space-x-4 col-span-full flex justify-end pt-10">
                 <Button
                   type="button"
                   onClick={() => form.reset()}

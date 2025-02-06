@@ -20,6 +20,10 @@ interface InputControllerProps<T extends FieldValues>
   placeholder: string;
   type?: React.HTMLInputTypeAttribute | undefined;
   formDescription?: React.ReactNode;
+  maxLength?: number;
+  max?: number;
+  min?: number;
+  minLength?: number;
 }
 
 export const InputController = <T extends FieldValues>({

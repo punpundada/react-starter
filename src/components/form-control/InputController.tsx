@@ -10,6 +10,7 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
 
 interface InputControllerProps<T extends FieldValues>
   extends React.HTMLAttributes<HTMLInputElement> {
@@ -24,6 +25,8 @@ interface InputControllerProps<T extends FieldValues>
   max?: number;
   min?: number;
   minLength?: number;
+  btnIcon?: React.ReactElement;
+  onBtnClick?: () => void;
 }
 
 export const InputController = <T extends FieldValues>({
@@ -57,15 +60,27 @@ export const InputController = <T extends FieldValues>({
           <FormItem className="w-full">
             {label && <FormLabel>{label}</FormLabel>}
             <FormControl className="w-full">
-              <Input
-                placeholder={placeholder}
-                {...field}
-                {...rest}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                type={type}
-                className={cn("w-full", className)}
-              />
+              <div className="relative">
+                <Input
+                  placeholder={placeholder}
+                  {...field}
+                  {...rest}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  type={type}
+                  className={cn("w-full", className)}
+                />
+                {rest.btnIcon && (
+                  <Button
+                    variant={"ghost"}
+                    className="absolute right-1 top-0"
+                    onClick={rest.onBtnClick}
+                    type="button"
+                  >
+                    {rest.btnIcon}
+                  </Button>
+                )}
+              </div>
             </FormControl>
             {formDescription && (
               <FormDescription>{formDescription}</FormDescription>

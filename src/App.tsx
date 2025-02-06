@@ -6,6 +6,12 @@ import Demo from "./pages/demo/Demo";
 import NotFound from "./pages/error/NotFound";
 import Demand from "./pages/demand/demand/Demand";
 import Authority from "./pages/demand/authority/Authority";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Provider } from "react-redux";
+import store from "./store/store";
+import Login from "./pages/auth/Login";
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
@@ -45,6 +51,15 @@ const router = createBrowserRouter([
     ],
   },
   {
+    path: "auth",
+    children: [
+      {
+        path: "login",
+        element: <Login />,
+      },
+    ],
+  },
+  {
     path: "*",
     element: <NotFound />,
   },
@@ -53,9 +68,21 @@ const router = createBrowserRouter([
 function App() {
   return (
     <>
-      <RouterProvider router={router} />
+      <Provider store={store}>
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
+      </Provider>
     </>
   );
 }
 
 export default App;
+
+// function PrivateRoute({ children }: { children: React.ReactNode }) {
+//   const user = useSelector(selectUser);
+
+//   if (user) {
+//     return children;
+//   }
+// }

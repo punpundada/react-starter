@@ -1,17 +1,21 @@
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
-import { Outlet } from "react-router-dom";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Outlet, useNavigate } from "react-router-dom";
 import AppSidebar from "./app-sidebar";
 import React from "react";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/slices/auth";
 
 const Layout = React.memo(() => {
+  const user = useSelector(selectUser);
+  const navigate = useNavigate();
+  if (!user) {
+    navigate("/auth/login");
+  }
   return (
     <SidebarProvider defaultOpen className="h-screen">
       <AppSidebar />
       <SidebarInset className="h-full">
-          <Outlet />
+        <Outlet />
       </SidebarInset>
     </SidebarProvider>
   );

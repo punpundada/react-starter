@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -10,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { DayPicker, DropdownProps } from "react-day-picker";
+import { DayPicker } from "react-day-picker";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -61,46 +62,51 @@ function Calendar({
         day_hidden: "invisible",
         ...classNames,
       }}
-      components={{
-        Dropdown: ({ value, onChange, children, ...props }: DropdownProps) => {
-          const options = React.Children.toArray(
-            children
-          ) as React.ReactElement<React.HTMLProps<HTMLOptionElement>>[];
-          const selected = options.find((child) => child.props.value === value);
-          const handleChange = (value: string) => {
-            const changeEvent = {
-              target: { value },
-            } as React.ChangeEvent<HTMLSelectElement>;
-            onChange?.(changeEvent);
-          };
-          return (
-            <Select
-              value={value?.toString()}
-              onValueChange={(value) => {
-                handleChange(value);
-              }}
-            >
-              <SelectTrigger className="pr-1.5 focus:ring-0">
-                <SelectValue>{selected?.props?.children}</SelectValue>
-              </SelectTrigger>
-              <SelectContent position="popper">
-                <ScrollArea className="h-80">
-                  {options.map((option, id: number) => (
-                    <SelectItem
-                      key={`${option.props.value}-${id}`}
-                      value={option.props.value?.toString() ?? ""}
-                    >
-                      {option.props.children}
-                    </SelectItem>
-                  ))}
-                </ScrollArea>
-              </SelectContent>
-            </Select>
-          );
-        },
-        IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
-        IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
-      }}
+      components={
+        {
+          Dropdown: ({ value, onChange, children }: any) => {
+            // Dropdown: ({ value, onChange, children, ...props }: DropdownProps) => {
+            const options = React.Children.toArray(
+              children
+            ) as React.ReactElement<React.HTMLProps<HTMLOptionElement>>[];
+            const selected = options.find(
+              (child) => child.props.value === value
+            );
+            const handleChange = (value: string) => {
+              const changeEvent = {
+                target: { value },
+              } as React.ChangeEvent<HTMLSelectElement>;
+              onChange?.(changeEvent);
+            };
+            return (
+              <Select
+                value={value?.toString()}
+                onValueChange={(value) => {
+                  handleChange(value);
+                }}
+              >
+                <SelectTrigger className="pr-1.5 focus:ring-0">
+                  <SelectValue>{selected?.props?.children}</SelectValue>
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  <ScrollArea className="h-80">
+                    {options.map((option, id: number) => (
+                      <SelectItem
+                        key={`${option.props.value}-${id}`}
+                        value={option.props.value?.toString() ?? ""}
+                      >
+                        {option.props.children}
+                      </SelectItem>
+                    ))}
+                  </ScrollArea>
+                </SelectContent>
+              </Select>
+            );
+          },
+          IconLeft: () => <ChevronLeft className="h-4 w-4" />,
+          IconRight: () => <ChevronRight className="h-4 w-4" />,
+        } as any
+      }
       {...props}
     />
   );

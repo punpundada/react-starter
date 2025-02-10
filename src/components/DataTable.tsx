@@ -81,7 +81,7 @@ export function DataTable<TData, TValue>({
                     style={{ ...getCommonPinningStyles(header.column) }}
                   >
                     <div
-                      className={cn("whitespace-nowrap", {
+                      className={cn("whitespace-nowrap font-semibold", {
                         "flex gap-3 items-center justify-center":
                           !!columnPinning,
                       })}

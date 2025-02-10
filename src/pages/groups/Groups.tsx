@@ -1,6 +1,15 @@
 import DataTable from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import PageLayout from "@/layout/PageLayout";
 import { ExtendedColumnDef } from "@/type/utils";
 
@@ -26,7 +35,6 @@ const columns: ExtendedColumnDef<Payment>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    header_className: "This is header className",
   },
   {
     accessorKey: "email",
@@ -68,11 +76,28 @@ const Groups = () => {
         <CardHeader>
           <CardTitle>Audit Groups</CardTitle>
         </CardHeader>
-        <CardContent className="max-h-[595px] overflow-auto relative">
-          <DataTable
-            columns={columns}
-            data={data}
-          />
+        <CardContent className="h-full space-y-4">
+          <div className="max-h-[595px] overflow-auto">
+            <DataTable columns={columns} data={data} columnPinning />
+          </div>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant={"secondary"}>Back</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>This is demo title</DialogTitle>
+                <DialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  your account and remove your data from our servers.
+                </DialogDescription>
+              </DialogHeader>
+              this is a dialog box
+              <DialogFooter>
+                <Button type="submit">Confirm</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </CardContent>
       </Card>
     </PageLayout>

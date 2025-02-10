@@ -54,7 +54,7 @@ const Login = () => {
         <Card className="h-full rounded-tl-none rounded-bl-none">
           <CardHeader>
             <CardTitle>Welcome Back</CardTitle>
-            <CardDescription>Login to your ILMS account</CardDescription>
+            <CardDescription>Login to your account...</CardDescription>
             <Form {...form}>
               <form
                 className="pt-10 space-y-4 "
@@ -80,7 +80,8 @@ const Login = () => {
             </Form>
           </CardHeader>
         </Card>
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center gap-3 flex-col">
+          {/* <span className="text-black text-4xl font-bold font-mono  ">INDIAN NAVY</span> */}
           <img src={image} alt="image" className="object-contain w-1/2" />
         </div>
       </div>

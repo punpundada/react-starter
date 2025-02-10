@@ -15,15 +15,19 @@ const PageLayout = React.memo(
       <div className="space-y-2 h-full">
         <div>
           <div className="flex gap-3 pt-1 items-center">
-            <SidebarTrigger />
-            <Separator className="w-[2px] h-6" orientation="vertical" color="black" />
+            <SidebarTrigger className="ml-1" />
+            <Separator
+              className="w-[2px] h-6"
+              orientation="vertical"
+              color="black"
+            />
             <BreadCrums list={breadcrumList} />
           </div>
           <Helmet>
             <title>{title}</title>
           </Helmet>
         </div>
-        <div className="h-[93.5%] pr-2">{children}</div>
+        <div className="h-[93.5%] px-1">{children}</div>
       </div>
     );
   }

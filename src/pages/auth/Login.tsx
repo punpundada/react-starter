@@ -14,13 +14,18 @@ import image from "@/assets/indian-navy-seeklogo.png";
 import { Eye } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { authActions } from "@/store/slices/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions, selectUser } from "@/store/slices/auth";
+import { InteractiveGridPattern } from "@/components/interactive-grid-pattern";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = React.useState(false);
   const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+
+  const [showPassword, setShowPassword] = React.useState(false);
   const form = useForm<LoginScehemaType>({
     defaultValues: {
       password: "",
@@ -33,13 +38,19 @@ const Login = () => {
 
   const onSubmit = (data: LoginScehemaType) => {
     console.log(JSON.stringify(data, null, 2));
+    toast.success("Welcome " + data.username);
+    dispatch(authActions.setUser(data));
     navigate("/");
-    dispatch(authActions.setUser({}));
   };
+  React.useLayoutEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  });
 
   return (
     <div className="h-screen w-screen flex justify-center items-center">
-      <div className="grid grid-cols-2 w-1/2 h-[55%] rounded-tl-none rounded-bl-2xl bg-blue-700 rounded-r-xl">
+      <div className="grid grid-cols-2 w-1/2 h-[55%] rounded-tl-none rounded-bl-2xl bg-blue-700 rounded-r-xl z-10">
         <Card className="h-full rounded-tl-none rounded-bl-none">
           <CardHeader>
             <CardTitle>Welcome Back</CardTitle>
@@ -73,6 +84,15 @@ const Login = () => {
           <img src={image} alt="image" className="object-contain w-1/2" />
         </div>
       </div>
+      <InteractiveGridPattern
+        className={cn(
+          "[mask-image:radial-gradient(800px_circle_at_center,white,transparent)]"
+        )}
+        width={30}
+        height={30}
+        squares={[80, 80]}
+        squaresClassName="hover:fill-blue-500"
+      />
     </div>
   );
 };

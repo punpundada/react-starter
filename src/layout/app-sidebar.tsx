@@ -1,3 +1,4 @@
+import { useTheme } from "@/components/theme-provider";
 import {
   Collapsible,
   CollapsibleContent,
@@ -24,41 +25,24 @@ import {
   SidebarMenuSubItem,
   SidebarMenuSub,
 } from "@/components/ui/sidebar";
+import { authActions } from "@/store/slices/auth";
 
 import {
   ChevronDown,
   LayoutDashboard,
-  BookMarked,
-  BookCheck,
-  BookOpenText,
   TextQuote,
-  StarHalf,
-  ClipboardType,
-  Blocks,
-  MessageSquareQuote,
   Proportions,
-  BadgeIndianRupee,
-  BadgeAlert,
-  Rocket,
-  Package,
-  ArrowUpFromLine,
-  ArrowDownFromLine,
-  Tickets,
-  NotebookPen,
   ReceiptText,
-  LandPlot,
   Binoculars,
-  Cog,
-  FileX2,
-  HandPlatter,
-  FolderSync,
-  ShieldCheck,
-  CreditCard,
-  UtilityPole,
   ChevronUp,
   User2,
+  LogOut,
+  Users,
+  Moon,
+  Sun,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 
 const items = [
   {
@@ -67,185 +51,48 @@ const items = [
     url: "/",
   },
   {
-    title: "Demand",
-    children: [
-      {
-        title: "Demand",
-        url: "demand/demand",
-        icon: BookMarked,
-      },
-      {
-        title: "Authority",
-        url: "demand/authority",
-        icon: BookCheck,
-      },
-      {
-        title: "Ledger",
-        url: "demand/ledger",
-        icon: BookOpenText,
-      },
-    ],
+    title: "Groups",
+    icon: Users,
+    url: "/groups",
   },
   {
-    title: "Provisioning",
-    children: [
-      {
-        title: "Indent",
-        url: "provisioning/indent",
-        icon: TextQuote,
-      },
-      {
-        title: "Review",
-        url: "provisioning/review",
-        icon: StarHalf,
-      },
-      {
-        title: "BForm",
-        url: "provisioning/bform",
-        icon: ClipboardType,
-      },
-    ],
+    title: "Ledger",
+    icon: TextQuote,
+    url: "/ledger",
   },
   {
-    title: "Procurement",
+    title: "Scheduling",
     children: [
       {
-        title: "Tender",
-        url: "provisioning/tender",
-        icon: Blocks,
-      },
-      {
-        title: "Quote",
-        url: "provisioning/quote",
-        icon: MessageSquareQuote,
-      },
-      {
-        title: "Proc",
-        url: "provisioning/proc",
+        title: "Gatepass",
         icon: Proportions,
+        url: "/scheduling/gatepass",
       },
       {
-        title: "Payment",
-        url: "provisioning/payment",
-        icon: BadgeIndianRupee,
-      },
-    ],
-  },
-  {
-    title: "Delivery",
-    children: [
-      {
-        title: "Issue Status",
-        url: "delivery/issue-status",
-        icon: BadgeAlert,
-      },
-      {
-        title: "Release",
-        url: "delivery/release",
-        icon: Rocket,
-      },
-      {
-        title: "Packing",
-        url: "delivery/packing",
-        icon: Package,
-      },
-      {
-        title: "GatePass",
-        url: "delivery/gatepass",
-        icon: Tickets,
-      },
-      {
-        title: "GateOut",
-        url: "delivery/gateout",
-        icon: ArrowDownFromLine,
-      },
-    ],
-  },
-  {
-    title: "Receipt",
-    children: [
-      {
-        title: "Gate In",
-        url: "receipt/gatein",
-        icon: ArrowUpFromLine,
-      },
-      {
-        title: "INote",
-        url: "receipt/inote",
-        icon: NotebookPen,
-      },
-      {
-        title: "Receipt",
-        url: "receipt/receipt",
+        title: "Store Receipt",
         icon: ReceiptText,
-      },
-      {
-        title: "Survey",
-        url: "receipt/survey",
-        icon: LandPlot,
-      },
-      {
-        title: "MIS-SRV",
-        url: "receipt/mis-srv",
-        icon: Binoculars,
+        url: "/scheduling/store-receipt",
       },
     ],
   },
   {
-    title: "Tech Service",
-    children: [
-      {
-        title: "Survey",
-        url: "tech-survey/gatein",
-        icon: LandPlot,
-      },
-      {
-        title: "Repairable",
-        url: "tech-survey/repairable",
-        icon: Cog,
-      },
-      {
-        title: "Disposal",
-        url: "tech-survey/disposal",
-        icon: FileX2,
-      },
-      {
-        title: "Preservation",
-        url: "tech-survey/preservation",
-        icon: HandPlatter,
-      },
-    ],
-  },
-  {
-    title: "Other",
-    children: [
-      {
-        title: "Stock Transfer",
-        url: "other/stock-transfer",
-        icon: FolderSync,
-      },
-      {
-        title: "Verification",
-        url: "other/verification",
-        icon: ShieldCheck,
-      },
-      {
-        title: "BinCard",
-        url: "other/bin-card",
-        icon: CreditCard,
-      },
-      {
-        title: "CWH-MIS",
-        url: "other/cwh-mis",
-        icon: UtilityPole,
-      },
-    ],
+    title: "Observation/Objection",
+    icon: Binoculars,
+    url: "/observations",
   },
 ];
 
 const AppSidebar = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { setTheme, theme } = useTheme();
+
+  const onSignout = () => {
+    dispatch(authActions.signout());
+    navigate("/auth/login");
+  };
   return (
-    <Sidebar variant="floating" collapsible="offcanvas">
+    <Sidebar variant="sidebar" collapsible="offcanvas">
       <SidebarHeader />
       <SidebarContent className="flex flex-col justify-between">
         <ScrollArea>
@@ -256,7 +103,7 @@ const AppSidebar = () => {
               <SidebarMenu>
                 {items.map((item) => {
                   return !item.children?.length ? (
-                    <SidebarMenuItem key={item.title}>
+                    <SidebarMenuItem key={item.title} className="my-2">
                       <SidebarMenuButton asChild>
                         <Link to={item.url ? item.url : ""}>
                           {item.icon && <item.icon />}
@@ -300,7 +147,7 @@ const AppSidebar = () => {
         <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem>
-              <DropdownMenu >
+              <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton>
                     <User2 /> Username
@@ -314,14 +161,28 @@ const AppSidebar = () => {
                   sideOffset={-30}
                   align="start"
                 >
-                  <DropdownMenuItem>
-                    <span>Account</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <span>Billing</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  {theme === "light" ? (
+                    <DropdownMenuItem
+                      className="flex justify-between"
+                      onClick={() => setTheme("dark")}
+                    >
+                      <span>Dark Mode</span>
+                      <Moon />
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem
+                      className="flex justify-between"
+                      onClick={() => setTheme("light")}
+                    >
+                      <span>Light Mode</span> <Sun />
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem
+                    className="flex justify-between"
+                    onClick={onSignout}
+                  >
                     <span>Sign out</span>
+                    <LogOut />
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

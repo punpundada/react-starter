@@ -15,11 +15,13 @@ export const authSlice = createSlice({
     setUser: (state, action: PayloadAction<Record<string, unknown>>) => {
       state.user = action.payload;
     },
+    signout: (state) => {
+      state.user = null;
+    },
   },
 });
 
 export const selectAuthState = (state: RootState) => state.authReducer;
-
 
 export const selectUser = createSelector(
   [selectAuthState],

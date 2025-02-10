@@ -2,14 +2,18 @@ import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./layout/Layout";
 import Dashboard from "./pages/Dashboard";
-import Demo from "./pages/demo/Demo";
 import NotFound from "./pages/error/NotFound";
-import Demand from "./pages/demand/demand/Demand";
-import Authority from "./pages/demand/authority/Authority";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import store from "./store/store";
 import Login from "./pages/auth/Login";
+import { Toaster } from "./components/ui/sonner";
+import { ThemeProvider } from "./components/theme-provider";
+import Groups from "./pages/groups/Groups";
+import Ledger from "./pages/ledger/Ledger";
+import Gatepass from "./pages/scheduling/gatepass/Gatepass";
+import StoreReceipt from "./pages/scheduling/store-receipt/StoreReceipt";
+import Observations from "./pages/observations/Observations";
 
 const queryClient = new QueryClient();
 
@@ -22,25 +26,27 @@ const router = createBrowserRouter([
         index: true,
       },
       {
-        path: "demand",
-        children: [
-          {
-            path: "demand",
-            element: <Demand />,
-          },
-          {
-            path: "authority",
-            element: <Authority />,
-          },
-        ],
+        path: "groups",
+        element: <Groups />,
       },
       {
-        element: <Demo />,
-        path: "demo",
+        path: "ledger",
+        element: <Ledger />,
+      },
+      {
+        path: "observations",
+        element: <Observations />,
+      },
+      {
+        path: "scheduling",
         children: [
           {
-            path: "demo",
-            element: <Demo />,
+            path: "gatepass",
+            element: <Gatepass />,
+          },
+          {
+            path: "store-receipt",
+            element: <StoreReceipt />,
           },
         ],
       },
@@ -70,7 +76,10 @@ function App() {
     <>
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
+          <ThemeProvider defaultTheme="light">
+            <RouterProvider router={router} />
+            <Toaster richColors closeButton position="top-right" />
+          </ThemeProvider>
         </QueryClientProvider>
       </Provider>
     </>

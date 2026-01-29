@@ -1,0 +1,42 @@
+export type WOSMasterType = {
+  WOSSerial: number;
+  CustomerCode: string;
+  WOSType: string;
+  InitiatedBy: string;
+  DateTimeInitiated: string;
+  ConcurredBy: string;
+  DateTimeConcurred: string;
+  UOINumber: string;
+  UOIDate: string;
+  ApprovedBy: string;
+  DateTimeApproved: string;
+  SanctionNo: string;
+  SanctionDate: string;
+  ClosedBy: string | null;
+  DateTimeClosed: string | null;
+  Remarks: string | null;
+};
+
+export type WOSLineType = {
+  WOSSerial: number;
+  WOSLineSerial: number;
+  ItemCode: string;
+  ItemDesc: string;
+  ItemDeno: string;
+  SOS: string;
+  AuthorisedQty: number;
+  ReceivedQty: number;
+  BalanceQty: number;
+  ReviewedQty: number;
+  VettedQty: number;
+  RecommendedQty: number;
+  DateFromWhichHeld: string;
+  AuthorityRef: string;
+  AuthorityDate: string;
+  Justification: string;
+  Price: number;
+  TotalCost: number;
+  Remarks: string;
+  ClosedBy: string | null;
+  DateTimeClosed: string | null;
+};

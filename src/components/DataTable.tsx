@@ -68,7 +68,8 @@ export function DataTable<TData, TValue>({
     <div className="w-full max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl">
       <div className="relative border rounded-xl overflow-hidden">
         <div className="overflow-x-auto overscroll-x-contain scrollbar-thin  overflow-hidden">
-          <Table className={cn(" px-4  min-w-max", className)}>
+           {/* min-w-max */}
+          <Table className={cn(" px-4 ", className)}>
             <TableHeader className="">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>

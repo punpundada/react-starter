@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions, selectUser } from "@/store/slices/auth";
 import { toast } from "sonner";
-import navyLogo from "@/assets/Indian_Navy_Insignia.svg.png";
+import navyLogo from "@/assets/Indian_Navy_Insignia2.svg.png";
 
 const Login = () => {
   const navigate = useNavigate();

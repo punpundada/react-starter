@@ -16,6 +16,7 @@ import StoreReceipt from "./pages/scheduling/store-receipt/StoreReceipt";
 import Observations from "./pages/observations/Observations";
 import InteractiveTreeCanvas from "./pages/tree/Tree";
 import WarrentOfStores from "./pages/wos/WarrentOfStores";
+import WOSLine from "./pages/wos/wos-line/WOSLine";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
           {
             element: <WarrentOfStores />,
             index: true,
+          },
+          {
+            element: <WOSLine />,
+            path:":wosserial"
           },
         ],
       },

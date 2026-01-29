@@ -1,158 +1,137 @@
 import DataTable from "@/components/DataTable";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import PageLayout from "@/layout/PageLayout";
 import { ExtendedColumnDef } from "@/type/utils";
+import { WOSMasterType } from "@/type/wos/wos-types";
+import { Link } from "react-router-dom";
 
 const breadcrumList = [
   { name: "Dashboard", path: "/" },
   { name: "WOS", path: "wos" },
 ];
 
-export type UserRow = {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  status: "active" | "inactive";
-  department: string;
-  country: string;
-  city: string;
-  phone: string;
-  company: string;
-  plan: string;
-  createdAt: string;
-  lastLogin: string;
-};
-
-const tableData: UserRow[] = [
+const tableData: WOSMasterType[] = [
   {
-    id: 1,
-    name: "Alice Johnson",
-    email: "alice@example.com",
-    role: "Admin",
-    status: "active",
-    department: "Engineering",
-    country: "USA",
-    city: "New York",
-    phone: "+1 555-1234",
-    company: "Acme Corp",
-    plan: "Enterprise",
-    createdAt: "2023-05-12",
-    lastLogin: "2024-12-10",
+    WOSSerial: 1001,
+    CustomerCode: "CUST",
+    WOSType: "NEW",
+    InitiatedBy: "EMP001",
+    DateTimeInitiated: "2026-01-28T09:30:00Z",
+    ConcurredBy: "EMP002",
+    DateTimeConcurred: "2026-01-28T11:00:00Z",
+    UOINumber: "UOI-2026-001",
+    UOIDate: "2026-01-28T12:00:00Z",
+    ApprovedBy: "MGR01",
+    DateTimeApproved: "2026-01-28T14:00:00Z",
+    SanctionNo: "SAN-7789",
+    SanctionDate: "2026-01-28T15:00:00Z",
+    ClosedBy: "EMP003",
+    DateTimeClosed: null,
+    Remarks: "Completed",
   },
   {
-    id: 2,
-    name: "Bob Smith",
-    email: "bob@example.com",
-    role: "Editor",
-    status: "inactive",
-    department: "Marketing",
-    country: "UK",
-    city: "London",
-    phone: "+44 20 7946 0958",
-    company: "Globex Ltd",
-    plan: "Pro",
-    createdAt: "2022-11-03",
-    lastLogin: "2024-10-01",
-  },
-  {
-    id: 3,
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    role: "Viewer",
-    status: "active",
-    department: "Sales",
-    country: "Canada",
-    city: "Toronto",
-    phone: "+1 416-555-8899",
-    company: "Initech",
-    plan: "Free",
-    createdAt: "2024-01-19",
-    lastLogin: "2025-01-15",
-  },
-  {
-    id: 4,
-    name: "Diana Prince",
-    email: "diana@example.com",
-    role: "Manager",
-    status: "active",
-    department: "HR",
-    country: "Germany",
-    city: "Berlin",
-    phone: "+49 30 123456",
-    company: "Wayne Enterprises",
-    plan: "Enterprise",
-    createdAt: "2021-08-21",
-    lastLogin: "2025-01-05",
-  },
-  {
-    id: 5,
-    name: "Ethan Hunt",
-    email: "ethan@example.com",
-    role: "Operator",
-    status: "inactive",
-    department: "Security",
-    country: "France",
-    city: "Paris",
-    phone: "+33 1 987654",
-    company: "IMF",
-    plan: "Pro",
-    createdAt: "2020-03-11",
-    lastLogin: "2024-06-18",
+    WOSSerial: 1002,
+    CustomerCode: "ACME",
+    WOSType: "MOD",
+    InitiatedBy: "EMP010",
+    DateTimeInitiated: "2026-01-27T10:00:00Z",
+    ConcurredBy: "EMP002",
+    DateTimeConcurred: "2026-01-28T12:00:00Z",
+    UOINumber: "UOI-2026-001",
+    UOIDate: "2026-01-28T12:00:00Z",
+    ApprovedBy: "EMP002",
+    DateTimeApproved: "2026-01-28T12:00:00Z",
+    SanctionNo: "SAN-7789",
+    SanctionDate: "2026-01-28T15:00:00Z",
+    ClosedBy: null,
+    DateTimeClosed: null,
+    Remarks: "Waiting for concurrence",
   },
 ];
 
-const columns: ExtendedColumnDef<UserRow>[] = [
+const columns: ExtendedColumnDef<WOSMasterType>[] = [
   {
-    accessorKey: "name",
-    header: "Name",
+    accessorKey: "WOSSerial",
+    header: "WOS Serial",
+    cell: ({ row }) => {
+      return (
+        <Link
+          className="text-blue-600 hover:underline"
+          to={`/wos/${row.original.WOSSerial}`}
+        >
+          {row.original.WOSSerial}
+        </Link>
+      );
+    },
   },
   {
-    accessorKey: "email",
-    header: "Email",
+    accessorKey: "WOSType",
+    header: "WOS Type",
   },
   {
-    accessorKey: "role",
-    header: "Role",
+    accessorKey: "CustomerCode",
+    header: "Customer Code",
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "InitiatedBy",
+    header: "Initiated By",
   },
   {
-    accessorKey: "department",
-    header: "Department",
+    accessorKey: "DateTimeInitiated",
+    header: "Initiated Date",
   },
   {
-    accessorKey: "country",
-    header: "Country",
+    accessorKey: "ApprovedBy",
+    header: "Approved Date",
   },
   {
-    accessorKey: "city",
-    header: "City",
+    accessorKey: "SanctionNo",
+    header: "Sanction No",
   },
   {
-    accessorKey: "phone",
-    header: "Name",
+    accessorKey: "SanctionDate",
+    header: "Saction Date",
+  },
+  // {
+  //   accessorKey: "UOIDate",
+  //   header: "UOI Date",
+  // },
+  {
+    accessorKey: "UOINumber",
+    header: "UOI Number",
   },
   {
-    accessorKey: "company",
-    header: "Company",
+    accessorKey: "Responce",
+    header: "Action",
+    cell: () => {
+      return <Button variant={"secondary"}>Response</Button>;
+    },
   },
-  {
-    accessorKey: "plan",
-    header: "Plan",
-  },
-  {
-    accessorKey: "lastLogin",
-    header: "Last Login",
-  },
+  // {
+  //   accessorKey: "ConcurredBy",
+  //   header: "Concurred By",
+  // },
 ];
 
 const WarrentOfStores = () => {
   return (
     <PageLayout breadcrumList={breadcrumList} title="ILMS">
-      Warrant of stores
-      <DataTable columns={columns} data={tableData} />
+      <Card className="h-full">
+        <CardHeader>
+          <CardTitle>WOS</CardTitle>
+          <CardDescription>WOS Master List</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DataTable columns={columns} data={tableData} />
+        </CardContent>
+      </Card>
     </PageLayout>
   );
 };

@@ -8,9 +8,12 @@ import { selectUser } from "@/store/slices/auth";
 const Layout = React.memo(() => {
   const user = useSelector(selectUser);
   const navigate = useNavigate();
-  if (!user) {
-    navigate("/auth/login");
-  }
+  React.useEffect(() => {
+    if (!user) {
+      navigate("/auth/login");
+    }
+  }, [user, navigate]);
+
   return (
     <SidebarProvider defaultOpen className="h-screen">
       <AppSidebar />

@@ -1,0 +1,28 @@
+.node__root > circle {
+    fill: blueviolet;
+    r: 100;
+  }
+  
+  .node__branch > circle {
+    fill: yellow;
+    r: 100;
+  }
+  
+  .node__leaf > circle {
+    fill: green;
+    /* Let's also make the radius of leaf nodes larger */
+    r: 100;
+  }
+
+  .edge{
+    stroke: aqua;
+    stroke-width: 2px;
+  }
+
+  .node__default {
+    fill: blue; /* Default node color */
+  }
+  
+  .node__hidden {
+    fill: red !important; /* Red color for nodes with show: false */
+  }

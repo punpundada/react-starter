@@ -30,57 +30,71 @@ import { authActions } from "@/store/slices/auth";
 import {
   ChevronDown,
   LayoutDashboard,
-  TextQuote,
-  Proportions,
-  ReceiptText,
+  // TextQuote,
+  // Proportions,
+  // ReceiptText,
   Binoculars,
   ChevronUp,
   User2,
   LogOut,
-  Users,
+  // Users,
   Moon,
   Sun,
+  LucideProps,
+  Ship,
 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-
-const items = [
+type SideBarItem = {
+  title: string;
+  icon: React.ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
+  >;
+  url: string;
+  children?: SideBarItem[];
+};
+const items: SideBarItem[] = [
   {
     title: "Dashboard",
     icon: LayoutDashboard,
     url: "/",
   },
   {
-    title: "Groups",
-    icon: Users,
-    url: "/groups",
+    title: "WOS",
+    icon: Ship,
+    url: "/wos",
   },
-  {
-    title: "Ledger",
-    icon: TextQuote,
-    url: "/ledger",
-  },
-  {
-    title: "Scheduling",
-    children: [
-      {
-        title: "Gatepass",
-        icon: Proportions,
-        url: "/scheduling/gatepass",
-      },
-      {
-        title: "Store Receipt",
-        icon: ReceiptText,
-        url: "/scheduling/store-receipt",
-      },
-    ],
-  },
+  // {
+  //   title: "Groups",
+  //   icon: Users,
+  //   url: "/groups",
+  // },
+  // {
+  //   title: "Ledger",
+  //   icon: TextQuote,
+  //   url: "/ledger",
+  // },
+  // {
+  //   title: "Scheduling",
+  //   children: [
+  //     {
+  //       title: "Gatepass",
+  //       icon: Proportions,
+  //       url: "/scheduling/gatepass",
+  //     },
+  //     {
+  //       title: "Store Receipt",
+  //       icon: ReceiptText,
+  //       url: "/scheduling/store-receipt",
+  //     },
+  //   ],
+  // },
   {
     title: "Observation/Objection",
     icon: Binoculars,
     url: "/observations",
   },
-];
+] satisfies SideBarItem[];
 
 const AppSidebar = () => {
   const navigate = useNavigate();
@@ -92,9 +106,9 @@ const AppSidebar = () => {
     navigate("/auth/login");
   };
   return (
-    <Sidebar variant="sidebar" collapsible="offcanvas">
+    <Sidebar variant="sidebar" collapsible="offcanvas" className="bg-accent">
       <SidebarHeader />
-      <SidebarContent className="flex flex-col justify-between">
+      <SidebarContent className="flex flex-col justify-between ">
         <ScrollArea>
           <ScrollBar />
           <SidebarGroup>
@@ -102,7 +116,7 @@ const AppSidebar = () => {
             <SidebarGroupContent>
               <SidebarMenu>
                 {items.map((item) => {
-                  return !item.children?.length ? (
+                  return !item?.children?.length ? (
                     <SidebarMenuItem key={item.title} className="my-2">
                       <SidebarMenuButton asChild>
                         <Link to={item.url ? item.url : ""}>

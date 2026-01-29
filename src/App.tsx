@@ -14,6 +14,8 @@ import Ledger from "./pages/ledger/Ledger";
 import Gatepass from "./pages/scheduling/gatepass/Gatepass";
 import StoreReceipt from "./pages/scheduling/store-receipt/StoreReceipt";
 import Observations from "./pages/observations/Observations";
+import InteractiveTreeCanvas from "./pages/tree/Tree";
+import WarrentOfStores from "./pages/wos/WarrentOfStores";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +40,10 @@ const router = createBrowserRouter([
         element: <Observations />,
       },
       {
+        path: "tree",
+        element: <InteractiveTreeCanvas />,
+      },
+      {
         path: "scheduling",
         children: [
           {
@@ -47,6 +53,15 @@ const router = createBrowserRouter([
           {
             path: "store-receipt",
             element: <StoreReceipt />,
+          },
+        ],
+      },
+      {
+        path: "wos",
+        children: [
+          {
+            element: <WarrentOfStores />,
+            index: true,
           },
         ],
       },

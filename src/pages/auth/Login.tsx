@@ -1,24 +1,16 @@
 import { InputController } from "@/components/form-control/InputController";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { LoginScehemaType, LoginSchema } from "@/type/auth/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import image from "@/assets/indian-navy-seeklogo.png";
-import { Eye } from "lucide-react";
+import { Eye, ShipWheel } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions, selectUser } from "@/store/slices/auth";
-import { InteractiveGridPattern } from "@/components/interactive-grid-pattern";
-import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import navyLogo from "@/assets/Indian_Navy_Insignia.svg.png";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -49,12 +41,21 @@ const Login = () => {
   });
 
   return (
-    <div className="h-screen w-screen flex justify-center items-center">
-      <div className="grid grid-cols-2 w-1/2 h-[55%] rounded-tl-none rounded-bl-2xl bg-blue-700 rounded-r-xl z-10">
-        <Card className="h-full rounded-tl-none rounded-bl-none">
-          <CardHeader>
-            <CardTitle>Welcome Back</CardTitle>
-            <CardDescription>Login to your account...</CardDescription>
+    <div className="grid min-h-svh lg:grid-cols-2">
+      <div className="flex flex-col gap-4 p-6 md:p-10">
+        <div className="flex justify-center gap-2 md:justify-start">
+          <a href="#" className="flex items-center gap-2 font-medium">
+            <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
+              <ShipWheel className="size-4" />
+            </div>
+            Indian Navy
+          </a>
+        </div>
+        <div className="flex flex-1 items-center justify-center">
+          <div className="w-full max-w-xs">
+            <p className="text-3xl font-semibold text-center">
+              Login to Audit Module
+            </p>
             <Form {...form}>
               <form
                 className="pt-10 space-y-4 "
@@ -63,7 +64,7 @@ const Login = () => {
                 <InputController
                   control={form.control}
                   name="username"
-                  placeholder="Enter Username/LoginId"
+                  placeholder="Enter LoginId"
                   label="Username"
                 />
                 <InputController
@@ -78,24 +79,33 @@ const Login = () => {
                 <Button className="w-full mt-12">Sign In</Button>
               </form>
             </Form>
-          </CardHeader>
-        </Card>
-        <div className="flex justify-center items-center gap-3 flex-col">
-          {/* <span className="text-black text-4xl font-bold font-mono  ">INDIAN NAVY</span> */}
-          <img src={image} alt="image" className="object-contain w-1/2" />
+          </div>
         </div>
       </div>
-      <InteractiveGridPattern
-        className={cn(
-          "[mask-image:radial-gradient(800px_circle_at_center,white,transparent)]"
-        )}
-        width={30}
-        height={30}
-        squares={[80, 80]}
-        squaresClassName="hover:fill-blue-500"
-      />
+      <div className="bg-muted shadow-2xl hidden lg:flex justify-center items-center ">
+        <img
+          src={navyLogo}
+          alt="Image"
+          className=" w-1/2 h-2/3 object-contain dark:brightness-[0.2] dark:grayscale"
+        />
+      </div>
     </div>
   );
 };
 
 export default Login;
+/*
+      <div className="grid grid-cols-2 w-1/2 h-[55%] rounded-tl-none rounded-br-2xl bg-accent rounded-r-xl z-10">
+        <Card className="h-full rounded-tl-none rounded-bl-none">
+          <CardHeader>
+            <CardTitle>Welcome Back</CardTitle> 
+            <CardDescription>Login to your account...</CardDescription>
+            
+          </CardHeader>
+        </Card>
+        <div className="flex justify-center items-center gap-3 flex-col">
+          
+          <img src={image} alt="image" className="object-contain w-1/2" />
+        </div>
+      </div>
+*/

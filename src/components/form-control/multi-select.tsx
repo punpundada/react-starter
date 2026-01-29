@@ -90,7 +90,7 @@ interface MultiSelectProps
    * Callback function triggered when the selected values change.
    * Receives an array of the new selected values.
    */
-  onValueChange: (value: string[]) => void;
+  onValueChange?: (value: string[]) => void;
 
   /** The default selected values when the component mounts. */
   defaultValue?: string[];
@@ -140,7 +140,7 @@ export const MultiSelect = React.forwardRef<
   (
     {
       options,
-      onValueChange,
+      // onValueChange,
       variant,
       defaultValue = [],
       placeholder = "Select options",
@@ -182,7 +182,7 @@ export const MultiSelect = React.forwardRef<
               const newSelectedValues = [...selectedValues];
               newSelectedValues.pop();
               setSelectedValues(newSelectedValues);
-              onValueChange(newSelectedValues);
+              // onValueChange(newSelectedValues);
               form.setValue(props.name, newSelectedValues);
               form.trigger(props.name);
             }
@@ -193,14 +193,14 @@ export const MultiSelect = React.forwardRef<
               ? selectedValues.filter((value) => value !== option)
               : [...selectedValues, option];
             setSelectedValues(newSelectedValues);
-            onValueChange(newSelectedValues);
+            // onValueChange(newSelectedValues);
             form.setValue(props.name, newSelectedValues);
             form.trigger(props.name);
           };
 
           const handleClear = () => {
             setSelectedValues([]);
-            onValueChange([]);
+            // onValueChange([]);
             form.setValue(props.name, []);
 
             form.trigger(props.name);
@@ -213,7 +213,7 @@ export const MultiSelect = React.forwardRef<
           const clearExtraOptions = () => {
             const newSelectedValues = selectedValues.slice(0, maxCount);
             setSelectedValues(newSelectedValues);
-            onValueChange(newSelectedValues);
+            // onValueChange(newSelectedValues);
             form.setValue(props.name, newSelectedValues);
             form.trigger(props.name);
           };
@@ -224,7 +224,7 @@ export const MultiSelect = React.forwardRef<
             } else {
               const allValues = options.map((option) => option.value);
               setSelectedValues(allValues);
-              onValueChange(allValues);
+              // onValueChange(allValues);
               form.setValue(props.name, allValues);
               form.trigger(props.name);
             }

@@ -22,7 +22,7 @@ const BreadCrums = React.memo(({ list }: Breadcrums) => {
         {list.map((Item, index) => {
           return index + 1 != list.length ? (
             <>
-              <BreadcrumbItem>
+              <BreadcrumbItem key={Item.path}>
                 {Item.name.startsWith("_") ? (
                   <BreadcrumbPage>{Item.name.replace("_", "")}</BreadcrumbPage>
                 ) : (

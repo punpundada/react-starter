@@ -1,8 +1,9 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { UserType } from "@/type/auth/auth";
 
 interface authState {
-  user?: Record<string, unknown> | null;
+  user: UserType | null;
 }
 const initialState: authState = {
   user: null,
@@ -12,7 +13,7 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<Record<string, unknown>>) => {
+    setUser: (state, action: PayloadAction<UserType>) => {
       state.user = action.payload;
     },
     signout: (state) => {
@@ -25,7 +26,7 @@ export const selectAuthState = (state: RootState) => state.authReducer;
 
 export const selectUser = createSelector(
   [selectAuthState],
-  (authState) => authState.user
+  (authState) => authState.user,
 );
 
 export const authActions = authSlice.actions;

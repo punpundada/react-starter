@@ -11,3 +11,25 @@ export const LoginSchema = z.object({
 });
 
 export type LoginScehemaType = z.TypeOf<typeof LoginSchema>;
+
+export type LoginResponse = {
+  message: string;
+  username: string;
+  name: string;
+  stationCode: string;
+  rank: string;
+  department: string;
+  roles: string[];
+  access_token: string;
+  token_type: string;
+};
+
+export type UserType = {
+  username: string;
+  name: string;
+  stationCode: string;
+  rank: string;
+  department: string;
+  roles: string[];
+  selectedRole:string;
+};

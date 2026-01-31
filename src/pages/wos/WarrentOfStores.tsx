@@ -1,4 +1,5 @@
 import DataTable from "@/components/DataTable";
+import Pagination from "@/components/Pagination";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,9 +9,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import PageLayout from "@/layout/PageLayout";
+import { getPageParam } from "@/lib/utils";
 import { ExtendedColumnDef } from "@/type/utils";
 import { WOSMasterType } from "@/type/wos/wos-types";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 const breadcrumList = [
   { name: "Dashboard", path: "/" },
@@ -64,7 +66,7 @@ const columns: ExtendedColumnDef<WOSMasterType>[] = [
       return (
         <Link
           className="text-blue-600 hover:underline"
-          to={`/wos/${row.original.WOSSerial}`}
+          to={`/wos/${row.original.WOSSerial}?page=1`}
         >
           {row.original.WOSSerial}
         </Link>
@@ -110,8 +112,12 @@ const columns: ExtendedColumnDef<WOSMasterType>[] = [
   {
     accessorKey: "Responce",
     header: "Action",
-    cell: () => {
-      return <Button variant={"secondary"}>Response</Button>;
+    cell: ({ row }) => {
+      return (
+        <Button variant={"secondary"} asChild>
+          <Link to={`response/${row.original.WOSSerial}`}>Response</Link>
+        </Button>
+      );
     },
   },
   // {
@@ -121,6 +127,9 @@ const columns: ExtendedColumnDef<WOSMasterType>[] = [
 ];
 
 const WarrentOfStores = () => {
+  const [searchParams] = useSearchParams();
+  const page = getPageParam(searchParams);
+
   return (
     <PageLayout breadcrumList={breadcrumList} title="ILMS">
       <Card className="h-full">
@@ -128,8 +137,9 @@ const WarrentOfStores = () => {
           <CardTitle>WOS</CardTitle>
           <CardDescription>WOS Master List</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <DataTable columns={columns} data={tableData} />
+          <Pagination page={page} pageCount={1} />
         </CardContent>
       </Card>
     </PageLayout>

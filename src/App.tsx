@@ -3,7 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./layout/Layout";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/error/NotFound";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import store from "./store/store";
 import Login from "./pages/auth/Login";
@@ -17,8 +17,9 @@ import Observations from "./pages/observations/Observations";
 import InteractiveTreeCanvas from "./pages/tree/Tree";
 import WarrentOfStores from "./pages/wos/WarrentOfStores";
 import WOSLine from "./pages/wos/wos-line/WOSLine";
-
-const queryClient = new QueryClient();
+import WOSResponse from "./pages/wos/wos-response/WOSResponse";
+import { queryClient } from "./lib/constants";
+import { ToastContainer } from "react-toastify";
 
 const router = createBrowserRouter([
   {
@@ -66,7 +67,11 @@ const router = createBrowserRouter([
           },
           {
             element: <WOSLine />,
-            path:":wosserial"
+            path: ":wosserial",
+          },
+          {
+            element: <WOSResponse />,
+            path: "response/:wosserial",
           },
         ],
       },
@@ -102,6 +107,7 @@ function App() {
           </ThemeProvider>
         </QueryClientProvider>
       </Provider>
+      <ToastContainer />
     </>
   );
 }

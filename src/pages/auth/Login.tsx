@@ -7,17 +7,18 @@ import { useForm } from "react-hook-form";
 import { Eye, ShipWheel } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { authActions, selectUser } from "@/store/slices/auth";
+import { useDispatch } from "react-redux";
+import { authActions } from "@/store/slices/auth";
 import { toast } from "sonner";
 import navyLogo from "@/assets/Indian_Navy_Insignia2.svg.png";
+import { useLogin } from "@/hooks/auth-hooks";
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector(selectUser);
 
   const [showPassword, setShowPassword] = React.useState(false);
+  const { mutateAsync } = useLogin();
   const form = useForm<LoginScehemaType>({
     defaultValues: {
       password: "",
@@ -28,17 +29,22 @@ const Login = () => {
     resolver: zodResolver(LoginSchema),
   });
 
-  const onSubmit = (data: LoginScehemaType) => {
-    console.log(JSON.stringify(data, null, 2));
-    toast.success("Welcome " + data.username);
-    dispatch(authActions.setUser(data));
+  const onSubmit = async (data: LoginScehemaType) => {
+    const response = await mutateAsync(data);
+    dispatch(
+      authActions.setUser({
+        department: response.department,
+        name: response.name,
+        rank: response.rank,
+        roles: response.roles,
+        stationCode: response.stationCode,
+        username: response.username,
+        selectedRole: response.roles[0],
+      }),
+    );
+    toast.success(`Welcome ${response.rank} ${response.name}`);
     navigate("/");
   };
-  React.useLayoutEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  });
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">

@@ -1,8 +1,8 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 type Success<T> = {
@@ -27,4 +27,9 @@ export async function tryCatch<T, E = Error>(
   } catch (error) {
     return { data: null, error: error as E };
   }
+}
+
+export function getPageParam(searchParam: URLSearchParams) {
+  const num = searchParam.get("page");
+  return num && !isNaN(Number(num)) ? Number(num) : 1;
 }

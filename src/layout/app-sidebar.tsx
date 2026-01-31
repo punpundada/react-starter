@@ -26,6 +26,7 @@ import {
   SidebarMenuSub,
 } from "@/components/ui/sidebar";
 import { authActions } from "@/store/slices/auth";
+import { useAppSelector } from "@/store/store";
 
 import {
   ChevronDown,
@@ -100,11 +101,13 @@ const AppSidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { setTheme, theme } = useTheme();
+  const name = useAppSelector(s=>s.authReducer.user?.name);
 
   const onSignout = () => {
     dispatch(authActions.signout());
     navigate("/auth/login");
   };
+  
   return (
     <Sidebar variant="sidebar" collapsible="offcanvas" className="bg-accent">
       <SidebarHeader />
@@ -112,7 +115,7 @@ const AppSidebar = () => {
         <ScrollArea>
           <ScrollBar />
           <SidebarGroup>
-            <SidebarGroupLabel>ILMS Menu</SidebarGroupLabel>
+            {/* <SidebarGroupLabel>ILMS Menu</SidebarGroupLabel> */}
             <SidebarGroupContent>
               <SidebarMenu>
                 {items.map((item) => {
@@ -164,7 +167,7 @@ const AppSidebar = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton>
-                    <User2 /> Username
+                    <User2 /> {name}
                     <ChevronUp className="ml-auto" />
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>

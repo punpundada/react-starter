@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useWOSLineList } from "@/hooks/wos/wos-hooks";
 import PageLayout from "@/layout/PageLayout";
 import { getPageParam } from "@/lib/utils";
 import { ExtendedColumnDef } from "@/type/utils";
@@ -19,6 +20,8 @@ function WOSLine() {
   const { wosserial } = useParams();
   const [searchParams] = useSearchParams();
   const page = getPageParam(searchParams);
+
+  const wosLineQuery = useWOSLineList({ wosserial: Number(wosserial) });
 
   const breadcrumList = React.useMemo(
     () => [
@@ -93,7 +96,11 @@ function WOSLine() {
               <Link to={`../response/${wosserial}`}>Response</Link>
             </Button>
           </div>
-          <DataTable columns={columns} data={[]} />
+          <DataTable
+            columns={columns}
+            data={wosLineQuery?.data ?? []}
+            loading={wosLineQuery.isLoading}
+          />
           <Pagination page={page} pageCount={1} />
         </CardContent>
       </Card>

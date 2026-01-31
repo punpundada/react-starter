@@ -8,9 +8,11 @@ import {
   FormMessage,
 } from "../ui/form";
 import { DateTimePicker } from "../ui/DatePicker";
+import { cn } from "@/lib/utils";
 
-export interface DateController<T extends FieldValues>
-  extends React.HTMLAttributes<HTMLInputElement> {
+export interface DateController<
+  T extends FieldValues,
+> extends React.HTMLAttributes<HTMLInputElement> {
   control: Control<T>;
   name: Path<T>;
   label?: string;
@@ -20,6 +22,10 @@ export interface DateController<T extends FieldValues>
   disabled?: boolean;
   startMonth?: Date;
   endMonth?: Date;
+  displayFormat?: {
+    hour24: string;
+    hour12: string;
+  };
 }
 
 const DateController = <T extends FieldValues>(props: DateController<T>) => {
@@ -36,10 +42,11 @@ const DateController = <T extends FieldValues>(props: DateController<T>) => {
               hourCycle={props.hourCycle ?? 24}
               {...field}
               placeholder={props.placeholder}
-              // displayFormat={{hour24:"dd/mm/yyyy"}}
+              displayFormat={props.displayFormat}
+              className={cn("shadow-lg", props.className)}
             />
             {props.formDescription && (
-              <FormDescription>Set your date and time.</FormDescription>
+              <FormDescription>{props.formDescription}</FormDescription>
             )}
             <FormMessage />
           </FormItem>

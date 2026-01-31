@@ -92,3 +92,17 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
+export const ONE_MINUTE_MS = 1000 * 60; // 60_000
+export const FIVE_MINUTES_MS = 1000 * 60 * 5; // 300_000
+export const TEN_MINUTES_MS = 1000 * 60 * 10; // 600_000
+export const FIFTEEN_MINUTES_MS = 1000 * 60 * 15; // 900_000
+export const TWENTY_MINUTES_MS = 1000 * 60 * 20; // 1_200_000
+export const TWENTY_FIVE_MINUTES_MS = 1000 * 60 * 25; // 1_500_000
+export const THIRTY_MINUTES_MS = 1000 * 60 * 30; // 1_800_000
+export const THIRTY_FIVE_MINUTES_MS = 1000 * 60 * 35; // 2_100_000
+export const FORTY_MINUTES_MS = 1000 * 60 * 40; // 2_400_000
+export const FORTY_FIVE_MINUTES_MS = 1000 * 60 * 45; // 2_700_000
+export const FIFTY_MINUTES_MS = 1000 * 60 * 50; // 3_000_000
+export const FIFTY_FIVE_MINUTES_MS = 1000 * 60 * 55; // 3_300_000
+export const ONE_HOUR_MS = 1000 * 60 * 60; // 3_600_000

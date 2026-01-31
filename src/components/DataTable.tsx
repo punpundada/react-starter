@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { ExtendedColumnDef } from "@/type/utils";
 import { CSSProperties } from "react";
 import { Pin, PinOff } from "lucide-react";
+import { Spinner } from "./ui/spinner";
 
 const getCommonPinningStyles = <TData,>(
   column: Column<TData>,
@@ -49,6 +50,7 @@ interface DataTableProps<TData, TValue> {
   className?: string;
   getRowClassName?: (row: TData, index: number) => string;
   columnPinning?: boolean;
+  loading?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -57,6 +59,7 @@ export function DataTable<TData, TValue>({
   className,
   getRowClassName,
   columnPinning,
+  loading,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -65,11 +68,12 @@ export function DataTable<TData, TValue>({
   });
 
   return (
+    // <div className="w-full max-w-[90%]">
     <div className="w-full max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl">
       <div className="relative border rounded-xl overflow-hidden">
         <div className="overflow-x-auto overscroll-x-contain scrollbar-thin  overflow-hidden">
-           {/* min-w-max */}
-          <Table className={cn(" px-4 ", className)}>
+          {/* min-w-max */}
+          <Table className={cn(" px-4", className)}>
             <TableHeader className="">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
@@ -177,6 +181,17 @@ export function DataTable<TData, TValue>({
                     </TableRow>
                   );
                 })
+              ) : loading ? (
+                <>
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 flex justify-center items-center"
+                    >
+                      <Spinner />
+                    </TableCell>
+                  </TableRow>
+                </>
               ) : (
                 <TableRow>
                   <TableCell

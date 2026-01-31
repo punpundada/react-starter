@@ -33,3 +33,25 @@ export function getPageParam(searchParam: URLSearchParams) {
   const num = searchParam.get("page");
   return num && !isNaN(Number(num)) ? Number(num) : 1;
 }
+
+export function objectToQueryString(
+  params: Record<
+    string,
+    string | number | boolean | (string | number | boolean)[]
+  >,
+): string {
+  const query = Object.entries(params)
+    .filter(([_, value]) => value !== undefined && value !== null)
+    .flatMap(([key, value]) => {
+      if (Array.isArray(value)) {
+        return value.map(
+          (v) => `${encodeURIComponent(key)}=${encodeURIComponent(String(v))}`,
+        );
+      }
+
+      return `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`;
+    })
+    .join("&");
+
+  return query ? `?${query}` : "";
+}

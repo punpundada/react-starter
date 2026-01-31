@@ -1,4 +1,5 @@
 import DataTable from "@/components/DataTable";
+import DateController from "@/components/form-control/DateController";
 import Pagination from "@/components/Pagination";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,54 +9,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Form } from "@/components/ui/form";
+import { useWOSMasterList } from "@/hooks/wos/wos-hooks";
 import PageLayout from "@/layout/PageLayout";
 import { getPageParam } from "@/lib/utils";
+import { WOSMaterServiceParams } from "@/services/wos/wos-service";
+import { useAppSelector } from "@/store/store";
 import { ExtendedColumnDef } from "@/type/utils";
 import { WOSMasterType } from "@/type/wos/wos-types";
+import { useForm } from "react-hook-form";
 import { Link, useSearchParams } from "react-router-dom";
 
 const breadcrumList = [
   { name: "Dashboard", path: "/" },
   { name: "WOS", path: "wos" },
-];
-
-const tableData: WOSMasterType[] = [
-  {
-    WOSSerial: 1001,
-    CustomerCode: "CUST",
-    WOSType: "NEW",
-    InitiatedBy: "EMP001",
-    DateTimeInitiated: "2026-01-28T09:30:00Z",
-    ConcurredBy: "EMP002",
-    DateTimeConcurred: "2026-01-28T11:00:00Z",
-    UOINumber: "UOI-2026-001",
-    UOIDate: "2026-01-28T12:00:00Z",
-    ApprovedBy: "MGR01",
-    DateTimeApproved: "2026-01-28T14:00:00Z",
-    SanctionNo: "SAN-7789",
-    SanctionDate: "2026-01-28T15:00:00Z",
-    ClosedBy: "EMP003",
-    DateTimeClosed: null,
-    Remarks: "Completed",
-  },
-  {
-    WOSSerial: 1002,
-    CustomerCode: "ACME",
-    WOSType: "MOD",
-    InitiatedBy: "EMP010",
-    DateTimeInitiated: "2026-01-27T10:00:00Z",
-    ConcurredBy: "EMP002",
-    DateTimeConcurred: "2026-01-28T12:00:00Z",
-    UOINumber: "UOI-2026-001",
-    UOIDate: "2026-01-28T12:00:00Z",
-    ApprovedBy: "EMP002",
-    DateTimeApproved: "2026-01-28T12:00:00Z",
-    SanctionNo: "SAN-7789",
-    SanctionDate: "2026-01-28T15:00:00Z",
-    ClosedBy: null,
-    DateTimeClosed: null,
-    Remarks: "Waiting for concurrence",
-  },
 ];
 
 const columns: ExtendedColumnDef<WOSMasterType>[] = [
@@ -129,6 +96,17 @@ const columns: ExtendedColumnDef<WOSMasterType>[] = [
 const WarrentOfStores = () => {
   const [searchParams] = useSearchParams();
   const page = getPageParam(searchParams);
+  const stationCode = useAppSelector((s) => s.authReducer?.user?.stationCode);
+
+  const form = useForm<WOSMaterServiceParams>({
+    defaultValues: {
+      customer_code: undefined,
+      from_date: undefined,
+      station_code: stationCode,
+      to_date: undefined,
+    },
+  });
+  const wosQuery = useWOSMasterList(form.watch());
 
   return (
     <PageLayout breadcrumList={breadcrumList} title="ILMS">
@@ -138,7 +116,27 @@ const WarrentOfStores = () => {
           <CardDescription>WOS Master List</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <DataTable columns={columns} data={tableData} />
+          <Form {...form}>
+            <form className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              <DateController
+                control={form.control}
+                name="from_date"
+                placeholder="From Date"
+                label="From Date"
+              />
+              <DateController
+                control={form.control}
+                name="to_date"
+                placeholder="To Date"
+                label="To Date"
+              />
+            </form>
+          </Form>
+          <DataTable
+            columns={columns}
+            data={wosQuery.data ?? []}
+            loading={wosQuery.isLoading}
+          />
           <Pagination page={page} pageCount={1} />
         </CardContent>
       </Card>

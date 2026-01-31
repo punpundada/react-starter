@@ -12,13 +12,14 @@ import { authActions } from "@/store/slices/auth";
 import { toast } from "sonner";
 import navyLogo from "@/assets/Indian_Navy_Insignia2.svg.png";
 import { useLogin } from "@/hooks/auth-hooks";
+import { Spinner } from "@/components/ui/spinner";
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [showPassword, setShowPassword] = React.useState(false);
-  const { mutateAsync } = useLogin();
+  const { mutateAsync, isPending } = useLogin();
   const form = useForm<LoginScehemaType>({
     defaultValues: {
       password: "",
@@ -59,9 +60,10 @@ const Login = () => {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <p className="text-3xl font-semibold text-center">
+            <p className="text-2xl font-semibold text-center uppercase">
               Login to Audit Module
             </p>
+            <p className="text-2xl font-semibold text-center">DOCKYARD</p>
             <Form {...form}>
               <form
                 className="pt-10 space-y-4 "
@@ -82,7 +84,15 @@ const Login = () => {
                   btnIcon={<Eye size={36} />}
                   onBtnClick={() => setShowPassword((s) => !s)}
                 />
-                <Button className="w-full mt-12">Sign In</Button>
+                <Button className="w-full mt-12" disabled={isPending}>
+                  {isPending ? (
+                    <span className="flex justify-center gap-3 items-center">
+                      <Spinner /> Please Wait
+                    </span>
+                  ) : (
+                    "Sign In"
+                  )}
+                </Button>
               </form>
             </Form>
           </div>

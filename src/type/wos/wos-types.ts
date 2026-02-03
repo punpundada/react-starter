@@ -74,3 +74,47 @@ export type WOSCorrespondanceTYpe = {
   CorrespondenceChoice: string;
   CorrespondenceTypeDescription: string;
 };
+
+/*
+  "TableName": "WOSMaster",
+  "PrimaryKeyValue": "string",
+  "RoleName": "string",
+  "CorrespondenceBy": "string",
+  "CorrespondenceToRole": "string",
+  "CorrespondenceType": "string",
+  "StationCode": "string",
+  "Remarks": "string",
+  "DocumentType": "string",
+  "CorrespondenceChoice": "string"
+*/
+
+export const WOSCorrespondanceReplaySchema = z.object({
+  TableName: z.string().optional(),
+  PrimaryKeyValue: z
+    .string({ required_error: "WOS Serial is requreid" })
+    .nonempty(),
+  RoleName: z.string({ required_error: "RoleName is require" }).nonempty(),
+  CorrespondenceBy: z
+    .string({ required_error: "CorrespondenceBy is required" })
+    .nonempty(),
+  CorrespondenceToRole: z
+    .string({ required_error: "CorrespondenceToRole is required" })
+    .nonempty(),
+  CorrespondenceType: z
+    .string({ required_error: "CorrespondenceType is required" })
+    .nonempty(),
+  StationCode: z
+    .string({ required_error: "StationCode is required" })
+    .nonempty(),
+  Remarks: z
+    .string({ required_error: "Remarks is required" })
+    .nonempty(),
+  DocumentType: z
+    .string({ required_error: "DocumentType is required" })
+    .nonempty(),
+  CorrespondenceChoice: z
+    .string({ required_error: "CorrespondenceChoice is required" })
+    .nonempty(),
+});
+
+export type WOSCorrespondanceReplayTYpe = z.infer<typeof WOSCorrespondanceReplaySchema>

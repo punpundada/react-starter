@@ -9,107 +9,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-import { useWOSCorrespondanc } from "@/hooks/wos/wos-hooks";
+import { useSaveWOSReplay, useWOSCorrespondanc } from "@/hooks/wos/wos-hooks";
 import PageLayout from "@/layout/PageLayout";
 import { RootState, useAppSelector } from "@/store/store";
+import { WOSCorrespondanceReplayTYpe } from "@/type/wos/wos-types";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-
-const message = [
-  {
-    responseText: "This is a test response message",
-    responseBy: "c454545",
-    responseRole: "LOGO",
-    id: 1,
-  },
-  {
-    responseText: "This is a test response message from NLAO",
-    responseBy: "user1",
-    responseRole: "NLAO",
-    id: 2,
-  },
-  {
-    responseText: "message from LOGO to NLAO about WOS vet quantity",
-    responseBy: "c454545",
-    responseRole: "LOGO",
-    id: 3,
-  },
-  {
-    responseText: `message from LOGO to NLAO about WOS vet quantity. Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-     Commodi eos id molestiae nostrum dicta beatae placeat enim numquam suscipit minima cupiditate dolore, 
-     veniam similique aliquid quaerat quibusdam,
-     voluptas neque illo dolores nam aut error?`,
-    responseBy: "c454545",
-    responseRole: "LOGO",
-    id: 4,
-  },
-  {
-    responseText: `message from LOGO to NLAO about WOS vet quantity. Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-     Commodi eos id molestiae nostrum dicta beatae placeat enim numquam suscipit minima cupiditate dolore, 
-     veniam similique aliquid quaerat quibusdam,
-     voluptas neque illo dolores nam aut error?`,
-    responseBy: "c454545",
-    responseRole: "LOGO",
-    id: 4,
-  },
-  {
-    responseText: `message from LOGO to NLAO about WOS vet quantity. Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-     Commodi eos id molestiae nostrum dicta beatae placeat enim numquam suscipit minima cupiditate dolore, 
-     veniam similique aliquid quaerat quibusdam,
-     voluptas neque illo dolores nam aut error?`,
-    responseBy: "c454545",
-    responseRole: "LOGO",
-    id: 4,
-  },
-  {
-    responseText: `message from LOGO to NLAO about WOS vet quantity. Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-     Commodi eos id molestiae nostrum dicta beatae placeat enim numquam suscipit minima cupiditate dolore, 
-     veniam similique aliquid quaerat quibusdam,
-     voluptas neque illo dolores nam aut error?`,
-    responseBy: "c454545",
-    responseRole: "LOGO",
-    id: 4,
-  },
-  {
-    responseText: `message from LOGO to NLAO about WOS vet quantity. Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-     Commodi eos id molestiae nostrum dicta beatae placeat enim numquam suscipit minima cupiditate dolore, 
-     veniam similique aliquid quaerat quibusdam,
-     voluptas neque illo dolores nam aut error?`,
-    responseBy: "c454545",
-    responseRole: "LOGO",
-    id: 4,
-  },
-  {
-    responseText: `message from LOGO to NLAO about WOS vet quantity. Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-     Commodi eos id molestiae nostrum dicta beatae placeat enim numquam suscipit minima cupiditate dolore, 
-     veniam similique aliquid quaerat quibusdam,
-     voluptas neque illo dolores nam aut error?`,
-    responseBy: "c454545",
-    responseRole: "LOGO",
-    id: 4,
-  },
-  {
-    responseText: "This is a test response message from NLAO",
-    responseBy: "user1",
-    responseRole: "NLAO",
-    id: 5,
-  },
-  {
-    responseText: "This is a test response message from NLAO",
-    responseBy: "user1",
-    responseRole: "NLAO",
-    id: 6,
-  },
-  {
-    responseText:
-      "This is a test response message from NLAO. rejecting the proposal",
-    responseBy: "user1",
-    responseRole: "NLAO",
-    id: 7,
-  },
-];
 
 type WOSResponseType = {
   text: string;
@@ -121,10 +27,12 @@ function WOSResponse() {
   const bottomRef = React.useRef<HTMLDivElement | null>(null);
 
   const { wosserial } = useParams();
-  const userId = useSelector((s: RootState) => s.authReducer.user?.username);
-  const selectedRole = useAppSelector(s=>s.authReducer.user?.selectedRole)
-
+  const userId = useAppSelector((s: RootState) => s.authReducer.user?.username);
+  const selectedRole = useAppSelector((s) => s.authReducer.user?.selectedRole);
+  const stationcode = useAppSelector((s) => s.authReducer.user?.stationCode);
+  console.log(selectedRole);
   const responseQuery = useWOSCorrespondanc({ wosSerial: Number(wosserial) });
+  const mutaion = useSaveWOSReplay(Number(wosserial));
 
   const breadcrumList = React.useMemo(
     () => [
@@ -143,20 +51,38 @@ function WOSResponse() {
     },
   });
 
-  React.useEffect(() => {
-    const scrollToBottom = () => {
-      bottomRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
+  const scrollToBottom = React.useCallback(() => {
+    bottomRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
+  }, []);
+
+  const onSubmit = async (data: WOSResponseType) => {
+    const d: WOSCorrespondanceReplayTYpe = {
+      CorrespondenceBy: userId!,
+      CorrespondenceChoice: "",
+      CorrespondenceToRole: "LOGO",
+      CorrespondenceType: "",
+      DocumentType: "",
+      PrimaryKeyValue: String(wosserial),
+      Remarks: data.text,
+      RoleName: "NLAO",
+      StationCode: stationcode!,
     };
+    await mutaion.mutateAsync(d);
+    form.reset();
+    scrollToBottom();
+  };
+
+  React.useEffect(() => {
     const timevar = setTimeout(() => {
       scrollToBottom();
     }, 1000);
     return () => {
       clearTimeout(timevar);
     };
-  }, []);
+  }, [scrollToBottom]);
 
   return (
     <PageLayout breadcrumList={breadcrumList} title="ILMS">
@@ -171,7 +97,7 @@ function WOSResponse() {
               return (
                 <Message
                   className={
-                    selectedRole !== m.CorrespondenceToRole
+                    selectedRole !== m.RoleName
                       ? "bg-secondary"
                       : "bg-blue-400 self-end"
                   }
@@ -185,13 +111,16 @@ function WOSResponse() {
           </div>
           <div className="absolute bottom-0 w-[95%]">
             <Form {...form}>
-              <form className="flex gap-2">
+              <form
+                className="flex gap-2"
+                onSubmit={form.handleSubmit(onSubmit)}
+              >
                 <InputController
                   control={form.control}
                   name="text"
                   placeholder="Enter Text Here"
                 />
-                <Button>Send</Button>
+                <Button disabled={mutaion.isPending}>Send</Button>
               </form>
             </Form>
           </div>

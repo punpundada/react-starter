@@ -209,14 +209,15 @@ const AppSidebar = () => {
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSub>
-                    <DropdownMenuSubTrigger>
-                      Roles
-                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubTrigger>Roles</DropdownMenuSubTrigger>
                     <DropdownMenuPortal>
                       <DropdownMenuSubContent>
                         {roles?.map((x) => {
                           return (
-                            <DropdownMenuItem onClick={() => changeRole(x)}>
+                            <DropdownMenuItem
+                              onClick={() => changeRole(x)}
+                              key={x}
+                            >
                               {x}
                             </DropdownMenuItem>
                           );

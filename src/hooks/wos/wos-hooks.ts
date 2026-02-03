@@ -4,6 +4,7 @@ import {
   THIRTY_MINUTES_MS,
 } from "@/lib/constants";
 import {
+  saveWOSReplay,
   vetWosService,
   wosCorrespondanceResponseService,
   wosCorrespondanceResponseServiceParams,
@@ -56,5 +57,16 @@ export function useWOSCorrespondanc(
     queryFn: () => wosCorrespondanceResponseService(params),
     enabled: !!params.wosSerial,
     staleTime: FIVE_MINUTES_MS,
+  });
+}
+
+export function useSaveWOSReplay(wosSerial:number) {
+  return useMutation({
+    mutationFn: saveWOSReplay,
+    meta: {
+      errorText: 1,
+      invalidatesQuery: [["wos", "correspondance", "reply",{wosSerial}]],
+      successText: "Repled successfully",
+    },
   });
 }

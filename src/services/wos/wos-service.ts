@@ -2,6 +2,7 @@ import { axisInstance } from "@/lib/constants";
 import { objectToQueryString } from "@/lib/utils";
 import { VetType } from "@/pages/wos/wos-line/WOSLine";
 import {
+  WOSCorrespondanceReplayTYpe,
   WOSCorrespondanceTYpe,
   WOSLineType,
   WOSMasterType,
@@ -48,5 +49,10 @@ export async function wosCorrespondanceResponseService(
   const res = await axisInstance.get<WOSCorrespondanceTYpe[]>(
     `correspondence/${params.wosSerial}`,
   );
+  return res.data;
+}
+
+export async function saveWOSReplay(params: WOSCorrespondanceReplayTYpe) {
+  const res = await axisInstance.post("correspondence", params);
   return res.data;
 }

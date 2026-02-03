@@ -1,3 +1,5 @@
+import z from "zod";
+
 export type WOSMasterType = {
   WOSSerial: number;
   CustomerCode: string;
@@ -39,4 +41,36 @@ export type WOSLineType = {
   Remarks: string;
   ClosedBy: string | null;
   DateTimeClosed: string | null;
+};
+
+const vettedLineSchema = z.object({
+  VettedQty: z.coerce
+    .number({ required_error: "VettedQty is required" })
+    .min(1),
+  WOSLineSerial: z.coerce
+    .number({ required_error: "WOSLineSerial is required" })
+    .min(1),
+});
+
+export const vettedQtySchema = z.object({
+  WOSSerial: z.coerce
+    .number({ required_error: "WOSSerial is required parameter" })
+    .min(1),
+  Lines: z.array(vettedLineSchema),
+});
+
+export type WOSCorrespondanceTYpe = {
+  LineNo: number;
+  TableName: string;
+  PrimaryKeyValue: string;
+  RoleName: string;
+  CorrespondenceBy: string;
+  CorrespondenceToRole: string;
+  DateTimeCorrespondence: string;
+  CorrespondenceType: string;
+  StationCode: string;
+  Remarks: string;
+  DocumentType: string;
+  CorrespondenceChoice: string;
+  CorrespondenceTypeDescription: string;
 };

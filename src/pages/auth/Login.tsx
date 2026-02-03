@@ -4,7 +4,7 @@ import { Form } from "@/components/ui/form";
 import { LoginScehemaType, LoginSchema } from "@/type/auth/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Eye, ShipWheel } from "lucide-react";
+import { Eye, ShipWheel, EyeOff } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -81,7 +81,7 @@ const Login = () => {
                   placeholder="Enter Password"
                   label="Password"
                   type={showPassword ? "text" : "password"}
-                  btnIcon={<Eye size={36} />}
+                  btnIcon={!showPassword ? <Eye size={36} /> : <EyeOff />}
                   onBtnClick={() => setShowPassword((s) => !s)}
                 />
                 <Button className="w-full mt-12" disabled={isPending}>

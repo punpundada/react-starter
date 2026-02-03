@@ -1,11 +1,18 @@
-import { ONE_MINUTE_MS, THIRTY_MINUTES_MS } from "@/lib/constants";
 import {
+  FIVE_MINUTES_MS,
+  ONE_MINUTE_MS,
+  THIRTY_MINUTES_MS,
+} from "@/lib/constants";
+import {
+  vetWosService,
+  wosCorrespondanceResponseService,
+  wosCorrespondanceResponseServiceParams,
   wosLineService,
   WOSLineServiceParams,
   wosMasterService,
   WOSMaterServiceParams,
 } from "@/services/wos/wos-service";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export function useWOSMasterList(params: WOSMaterServiceParams) {
   return useQuery({
@@ -27,5 +34,27 @@ export function useWOSLineList(params: WOSLineServiceParams) {
     },
     staleTime: ONE_MINUTE_MS,
     enabled: !!params.wosserial,
+  });
+}
+
+export function useVetWOSMutation() {
+  return useMutation({
+    mutationFn: vetWosService,
+    meta: {
+      invalidatesQuery: [["wos", "line", "list"]],
+      errorText: 1,
+      successText: "Qty vetted successfully",
+    },
+  });
+}
+
+export function useWOSCorrespondanc(
+  params: wosCorrespondanceResponseServiceParams,
+) {
+  return useQuery({
+    queryKey: ["wos", "correspondance", "reply", params],
+    queryFn: () => wosCorrespondanceResponseService(params),
+    enabled: !!params.wosSerial,
+    staleTime: FIVE_MINUTES_MS,
   });
 }

@@ -8,6 +8,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -101,15 +106,24 @@ const AppSidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { setTheme, theme } = useTheme();
-  const name = useAppSelector(s=>s.authReducer.user?.name);
+  const name = useAppSelector((s) => s.authReducer.user?.name);
+  const roles = useAppSelector((s) => s.authReducer.user?.roles);
 
   const onSignout = () => {
     dispatch(authActions.signout());
     navigate("/auth/login");
   };
-  
+
+  const changeRole = (role: string) => {
+    dispatch(authActions.changeRole(role));
+  };
+
   return (
-    <Sidebar variant="sidebar" collapsible="offcanvas" className="bg-accent">
+    <Sidebar
+      variant="sidebar"
+      collapsible="offcanvas"
+      className="bg-accent z-30"
+    >
       <SidebarHeader />
       <SidebarContent className="flex flex-col justify-between ">
         <ScrollArea>
@@ -194,6 +208,22 @@ const AppSidebar = () => {
                       <span>Light Mode</span> <Sun />
                     </DropdownMenuItem>
                   )}
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      Roles
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuPortal>
+                      <DropdownMenuSubContent>
+                        {roles?.map((x) => {
+                          return (
+                            <DropdownMenuItem onClick={() => changeRole(x)}>
+                              {x}
+                            </DropdownMenuItem>
+                          );
+                        })}
+                      </DropdownMenuSubContent>
+                    </DropdownMenuPortal>
+                  </DropdownMenuSub>
                   <DropdownMenuItem
                     className="flex justify-between"
                     onClick={onSignout}

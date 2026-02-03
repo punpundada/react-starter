@@ -1,6 +1,7 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { UserType } from "@/type/auth/auth";
+import { toast } from "react-toastify";
 
 interface authState {
   user: UserType | null;
@@ -18,6 +19,16 @@ export const authSlice = createSlice({
     },
     signout: (state) => {
       state.user = null;
+    },
+    changeRole: (s, a: PayloadAction<string>) => {
+      const found = s.user?.roles.find(
+        (x) => x.trim().toLowerCase() === a.payload.trim().toLowerCase(),
+      );
+      if (found && s.user) {
+        s.user.selectedRole = a.payload;
+      } else {
+        toast.error(`User does not have ${a.payload} role`);
+      }
     },
   },
 });

@@ -117,12 +117,15 @@ const WarrentOfStores = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <Form {...form}>
-            <form className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <form className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               <DateController
                 control={form.control}
                 name="from_date"
                 placeholder="From Date"
                 label="From Date"
+                displayFormat={{
+                  hour12:"dd-MM-YYYY",
+                }}
               />
               <DateController
                 control={form.control}

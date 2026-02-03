@@ -23,8 +23,8 @@ export interface DateController<
   startMonth?: Date;
   endMonth?: Date;
   displayFormat?: {
-    hour24: string;
-    hour12: string;
+    hour24?: string;
+    hour12?: string;
   };
 }
 

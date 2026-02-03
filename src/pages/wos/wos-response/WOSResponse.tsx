@@ -9,8 +9,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
+import { useWOSCorrespondanc } from "@/hooks/wos/wos-hooks";
 import PageLayout from "@/layout/PageLayout";
-import { RootState } from "@/store/store";
+import { RootState, useAppSelector } from "@/store/store";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
@@ -25,7 +26,7 @@ const message = [
   },
   {
     responseText: "This is a test response message from NLAO",
-    responseBy: "c898989",
+    responseBy: "user1",
     responseRole: "NLAO",
     id: 2,
   },
@@ -45,21 +46,66 @@ const message = [
     id: 4,
   },
   {
+    responseText: `message from LOGO to NLAO about WOS vet quantity. Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+     Commodi eos id molestiae nostrum dicta beatae placeat enim numquam suscipit minima cupiditate dolore, 
+     veniam similique aliquid quaerat quibusdam,
+     voluptas neque illo dolores nam aut error?`,
+    responseBy: "c454545",
+    responseRole: "LOGO",
+    id: 4,
+  },
+  {
+    responseText: `message from LOGO to NLAO about WOS vet quantity. Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+     Commodi eos id molestiae nostrum dicta beatae placeat enim numquam suscipit minima cupiditate dolore, 
+     veniam similique aliquid quaerat quibusdam,
+     voluptas neque illo dolores nam aut error?`,
+    responseBy: "c454545",
+    responseRole: "LOGO",
+    id: 4,
+  },
+  {
+    responseText: `message from LOGO to NLAO about WOS vet quantity. Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+     Commodi eos id molestiae nostrum dicta beatae placeat enim numquam suscipit minima cupiditate dolore, 
+     veniam similique aliquid quaerat quibusdam,
+     voluptas neque illo dolores nam aut error?`,
+    responseBy: "c454545",
+    responseRole: "LOGO",
+    id: 4,
+  },
+  {
+    responseText: `message from LOGO to NLAO about WOS vet quantity. Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+     Commodi eos id molestiae nostrum dicta beatae placeat enim numquam suscipit minima cupiditate dolore, 
+     veniam similique aliquid quaerat quibusdam,
+     voluptas neque illo dolores nam aut error?`,
+    responseBy: "c454545",
+    responseRole: "LOGO",
+    id: 4,
+  },
+  {
+    responseText: `message from LOGO to NLAO about WOS vet quantity. Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+     Commodi eos id molestiae nostrum dicta beatae placeat enim numquam suscipit minima cupiditate dolore, 
+     veniam similique aliquid quaerat quibusdam,
+     voluptas neque illo dolores nam aut error?`,
+    responseBy: "c454545",
+    responseRole: "LOGO",
+    id: 4,
+  },
+  {
     responseText: "This is a test response message from NLAO",
-    responseBy: "c898989",
+    responseBy: "user1",
     responseRole: "NLAO",
     id: 5,
   },
   {
     responseText: "This is a test response message from NLAO",
-    responseBy: "c898989",
+    responseBy: "user1",
     responseRole: "NLAO",
     id: 6,
   },
   {
     responseText:
       "This is a test response message from NLAO. rejecting the proposal",
-    responseBy: "c898989",
+    responseBy: "user1",
     responseRole: "NLAO",
     id: 7,
   },
@@ -76,6 +122,9 @@ function WOSResponse() {
 
   const { wosserial } = useParams();
   const userId = useSelector((s: RootState) => s.authReducer.user?.username);
+  const selectedRole = useAppSelector(s=>s.authReducer.user?.selectedRole)
+
+  const responseQuery = useWOSCorrespondanc({ wosSerial: Number(wosserial) });
 
   const breadcrumList = React.useMemo(
     () => [
@@ -101,7 +150,12 @@ function WOSResponse() {
         block: "end",
       });
     };
-    scrollToBottom();
+    const timevar = setTimeout(() => {
+      scrollToBottom();
+    }, 1000);
+    return () => {
+      clearTimeout(timevar);
+    };
   }, []);
 
   return (
@@ -113,17 +167,17 @@ function WOSResponse() {
         </CardHeader>
         <CardContent className="space-y-4 h-[80%] relative">
           <div className="flex flex-col gap-4 px-8 h-[90%] overflow-y-auto scroll-shadow border-b-2 pb-10">
-            {message.map((m) => {
+            {responseQuery.data?.map((m) => {
               return (
                 <Message
                   className={
-                    userId !== m.responseBy
+                    selectedRole !== m.CorrespondenceToRole
                       ? "bg-secondary"
                       : "bg-blue-400 self-end"
                   }
-                  text={m.responseText}
-                  key={m.id}
-                  by={m.responseBy}
+                  text={m.Remarks}
+                  key={m.LineNo}
+                  by={m.CorrespondenceBy}
                 />
               );
             })}

@@ -4,5 +4,8 @@ import { useMutation } from "@tanstack/react-query";
 export function useLogin() {
   return useMutation({
     mutationFn: loginService,
+    meta:{
+      errorText:1
+    }
   });
 }

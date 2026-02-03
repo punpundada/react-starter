@@ -71,6 +71,7 @@
     "react-toastify": "^11.0.5",
     "recharts": "^2.15.0",
     "redux": "^5.0.1",
+    "redux-persist": "^6.0.0",
     "remark-gfm": "^4.0.1",
     "sonner": "^1.7.1",
     "tailwind-merge": "^2.5.5",

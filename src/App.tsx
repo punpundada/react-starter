@@ -5,7 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/error/NotFound";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
-import store from "./store/store";
+import store, { persistor } from "./store/store";
 import Login from "./pages/auth/Login";
 import { Toaster } from "./components/ui/sonner";
 import { ThemeProvider } from "./components/theme-provider";
@@ -20,6 +20,8 @@ import WOSLine from "./pages/wos/wos-line/WOSLine";
 import WOSResponse from "./pages/wos/wos-response/WOSResponse";
 import { queryClient } from "./lib/constants";
 import { ToastContainer } from "react-toastify";
+import { PersistGate } from "redux-persist/integration/react";
+import { Spinner } from "./components/ui/spinner";
 
 const router = createBrowserRouter([
   {
@@ -102,7 +104,16 @@ function App() {
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
           <ThemeProvider defaultTheme="light">
-            <RouterProvider router={router} />
+            <PersistGate
+              persistor={persistor}
+              loading={
+                <div className="w-screen h-screen flex justify-center items-center select-none">
+                  <Spinner className="w-16"/>
+                </div>
+              }
+            >
+              <RouterProvider router={router} />
+            </PersistGate>
             <Toaster richColors closeButton position="top-right" />
           </ThemeProvider>
         </QueryClientProvider>
@@ -113,11 +124,3 @@ function App() {
 }
 
 export default App;
-
-// function PrivateRoute({ children }: { children: React.ReactNode }) {
-//   const user = useSelector(selectUser);
-
-//   if (user) {
-//     return children;
-//   }
-// }

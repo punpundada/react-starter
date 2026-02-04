@@ -1,3 +1,4 @@
+import { text } from "stream/consumers";
 import z from "zod";
 
 export type WOSMasterType = {
@@ -106,15 +107,26 @@ export const WOSCorrespondanceReplaySchema = z.object({
   StationCode: z
     .string({ required_error: "StationCode is required" })
     .nonempty(),
-  Remarks: z
-    .string({ required_error: "Remarks is required" })
-    .nonempty(),
-  DocumentType: z
-    .string({ required_error: "DocumentType is required" })
-    .nonempty(),
+  Remarks: z.string({ required_error: "Remarks is required" }).nonempty(),
+  DocumentType: z.string().optional().nullable(),
   CorrespondenceChoice: z
     .string({ required_error: "CorrespondenceChoice is required" })
     .nonempty(),
 });
 
-export type WOSCorrespondanceReplayTYpe = z.infer<typeof WOSCorrespondanceReplaySchema>
+export type WOSCorrespondanceReplayTYpe = z.infer<
+  typeof WOSCorrespondanceReplaySchema
+>;
+
+export const WOSResponseSchema = z.object({
+  text: z
+    .string({ required_error: "Text is required" })
+    .min(6, "Text must be at least 6 characters long"),
+  loginId: z.string({ required_error: "LoginId is required" }).nonempty(),
+  role: z.string({ required_error: "Role is required" }).nonempty(),
+  correspondenceType: z
+    .string({ required_error: "CorrespondenceType is required" })
+    .nonempty(),
+});
+
+export type WOSResponseType = z.infer<typeof WOSResponseSchema>;

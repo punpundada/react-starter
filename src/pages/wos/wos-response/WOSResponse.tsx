@@ -1,3 +1,4 @@
+import ComboboxController from "@/components/form-control/ComboboxController";
 import { InputController } from "@/components/form-control/InputController";
 import Message from "@/components/Message";
 import { Button } from "@/components/ui/button";
@@ -9,19 +10,19 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
+import { useCodeTable } from "@/hooks/util-hooks/utils-hooks";
 import { useSaveWOSReplay, useWOSCorrespondanc } from "@/hooks/wos/wos-hooks";
 import PageLayout from "@/layout/PageLayout";
 import { RootState, useAppSelector } from "@/store/store";
-import { WOSCorrespondanceReplayTYpe } from "@/type/wos/wos-types";
+import {
+  WOSCorrespondanceReplayTYpe,
+  WOSResponseSchema,
+  WOSResponseType,
+} from "@/type/wos/wos-types";
+import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
-
-type WOSResponseType = {
-  text: string;
-  loginId: string;
-  role: string;
-};
 
 function WOSResponse() {
   const bottomRef = React.useRef<HTMLDivElement | null>(null);
@@ -30,9 +31,10 @@ function WOSResponse() {
   const userId = useAppSelector((s: RootState) => s.authReducer.user?.username);
   const selectedRole = useAppSelector((s) => s.authReducer.user?.selectedRole);
   const stationcode = useAppSelector((s) => s.authReducer.user?.stationCode);
-  console.log(selectedRole);
+
   const responseQuery = useWOSCorrespondanc({ wosSerial: Number(wosserial) });
   const mutaion = useSaveWOSReplay(Number(wosserial));
+  const correspondanceTYpeQuery = useCodeTable("CorrespondenceType");
 
   const breadcrumList = React.useMemo(
     () => [
@@ -49,6 +51,7 @@ function WOSResponse() {
       role: "NLAO",
       text: "",
     },
+    resolver: zodResolver(WOSResponseSchema),
   });
 
   const scrollToBottom = React.useCallback(() => {
@@ -61,10 +64,10 @@ function WOSResponse() {
   const onSubmit = async (data: WOSResponseType) => {
     const d: WOSCorrespondanceReplayTYpe = {
       CorrespondenceBy: userId!,
-      CorrespondenceChoice: "",
+      CorrespondenceChoice: "A",
       CorrespondenceToRole: "LOGO",
       CorrespondenceType: "",
-      DocumentType: "",
+      DocumentType: null,
       PrimaryKeyValue: String(wosserial),
       Remarks: data.text,
       RoleName: "NLAO",
@@ -112,15 +115,27 @@ function WOSResponse() {
           <div className="absolute bottom-0 w-[95%]">
             <Form {...form}>
               <form
-                className="flex gap-2"
+                className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end"
                 onSubmit={form.handleSubmit(onSubmit)}
               >
-                <InputController
+                <div className="col-span-2">
+                  <InputController
+                    control={form.control}
+                    name="text"
+                    placeholder="Enter Text Here"
+                    label="Response Text"
+                    className="mb-2"
+                  />
+                </div>
+                <ComboboxController
                   control={form.control}
-                  name="text"
-                  placeholder="Enter Text Here"
+                  name="correspondenceType"
+                  options={correspondanceTYpeQuery.data ?? []}
+                  label="Correspondence Type"
                 />
-                <Button disabled={mutaion.isPending}>Send</Button>
+                <Button disabled={mutaion.isPending} className="mb-2">
+                  Send
+                </Button>
               </form>
             </Form>
           </div>

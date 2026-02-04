@@ -68,20 +68,12 @@ const columns: ExtendedColumnDef<WOSMasterType>[] = [
     accessorKey: "SanctionDate",
     header: "Saction Date",
   },
-  // {
-  //   accessorKey: "UOIDate",
-  //   header: "UOI Date",
-  // },
-  {
-    accessorKey: "UOINumber",
-    header: "UOI Number",
-  },
   {
     accessorKey: "Responce",
     header: "Action",
     cell: ({ row }) => {
       return (
-        <Button variant={"secondary"} asChild>
+        <Button asChild>
           <Link to={`response/${row.original.WOSSerial}`}>Response</Link>
         </Button>
       );
@@ -124,7 +116,7 @@ const WarrentOfStores = () => {
                 placeholder="From Date"
                 label="From Date"
                 displayFormat={{
-                  hour12:"dd-MM-YYYY",
+                  hour12: "dd-MM-YYYY",
                 }}
               />
               <DateController
@@ -139,6 +131,7 @@ const WarrentOfStores = () => {
             columns={columns}
             data={wosQuery.data ?? []}
             loading={wosQuery.isLoading}
+            maxHeight="350px"
           />
           <Pagination page={page} pageCount={1} />
         </CardContent>

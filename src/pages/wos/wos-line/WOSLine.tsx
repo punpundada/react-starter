@@ -19,10 +19,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Link, useParams, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export type VetQuantityType = {
   VettedQty: number;
   WOSLineSerial: number;
+  TotalCost: number;
 };
 
 export type VetType = {
@@ -79,6 +81,8 @@ function WOSLine() {
     {
       accessorKey: "BalanceQty",
       header: "Balance Qty",
+      cell: ({ row: { original } }) =>
+        Number(original.AuthorisedQty) - Number(original.ReceivedQty),
     },
     {
       accessorKey: "ReviewedQty",
@@ -97,11 +101,24 @@ function WOSLine() {
             control={form.control}
             name={`Lines.${row.index}.VettedQty`}
             placeholder="Qty"
-            onChange={() => {
+            onChange={(e) => {
+              const val = e.currentTarget.value;
+
               form.setValue(
                 `Lines.${row.index}.WOSLineSerial`,
                 row.original.WOSLineSerial,
               );
+              if (
+                val &&
+                !isNaN(Number(val)) &&
+                row.original.Price &&
+                !isNaN(row.original.Price)
+              ) {
+                form.setValue(
+                  `Lines.${row.index}.TotalCost`,
+                  Number(val) * row.original.Price,
+                );
+              }
             }}
           />
         );
@@ -110,6 +127,8 @@ function WOSLine() {
     {
       accessorKey: "TotalCost",
       header: "Total Cost",
+      cell: ({ row }) =>
+        Number(row.original.VettedQty) * Number(row.original.Price),
     },
     {
       accessorKey: "AuthorityDate",
@@ -119,6 +138,17 @@ function WOSLine() {
 
   function saveVettedQty(data: VetType) {
     mutation.mutate(data);
+  }
+
+  function copyReviewedQty() {
+    wosLineQuery.data?.forEach((line, index) => {
+      form.setValue(`Lines.${index}.VettedQty`, line.ReviewedQty);
+      form.setValue(
+        `Lines.${index}.TotalCost`,
+        Number(line.ReviewedQty) * Number(line.Price),
+      );
+    });
+    toast.success("Reviewed Qty Copied");
   }
 
   React.useEffect(() => {
@@ -151,7 +181,10 @@ function WOSLine() {
                 maxHeight="350px"
               />
               <Pagination page={page} pageCount={1} />
-              <div className="flex justify-end">
+              <div className="flex justify-end gap-4">
+                <Button type="button" onClick={copyReviewedQty}>
+                  Copy Reviewed Qty
+                </Button>
                 <Button>Save</Button>
               </div>
             </form>

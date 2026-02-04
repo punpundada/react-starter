@@ -10,5 +10,5 @@ export async function codeTableService(columnName: string) {
   const res = await axisInstance.get<CodeTableOptions[]>(
     `codetable?column_name=${columnName}`,
   );
-  return res.data;
+  return res.data.map((x) => ({ value: x.CodeValue, label: x.Description }));
 }

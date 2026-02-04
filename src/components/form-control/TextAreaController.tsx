@@ -8,18 +8,17 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
+import { Textarea } from "../ui/textarea";
 
-interface InputControllerProps<T extends FieldValues>
-  extends React.HTMLAttributes<HTMLInputElement> {
+interface TextAreaControllerProps<T extends FieldValues>
+  extends React.HTMLAttributes<HTMLTextAreaElement> {
   control: Control<T>;
   name: Path<T>;
   label?: string;
   disabled?: boolean;
   placeholder: string;
-  type?: React.HTMLInputTypeAttribute | undefined;
   formDescription?: React.ReactNode;
   maxLength?: number;
   max?: number;
@@ -29,30 +28,29 @@ interface InputControllerProps<T extends FieldValues>
   onBtnClick?: () => void;
 }
 
-export const InputController = <T extends FieldValues>({
+export const TextAreaController = <T extends FieldValues>({
   control,
   disabled,
   name,
   label,
   className,
   placeholder,
-  type,
   formDescription,
   onChange,
   onBlur,
   ...rest
-}: InputControllerProps<T>) => {
+}: TextAreaControllerProps<T>) => {
   return (
     <FormField
       control={control}
       name={name}
       disabled={disabled}
       render={({ field }) => {
-        const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
           field.onChange(e);
           if (onChange) onChange(e);
         };
-        const handleBlur = (e: React.FocusEvent<HTMLInputElement, Element>) => {
+        const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement, Element>) => {
           field.onBlur();
           if (onBlur) onBlur(e);
         };
@@ -61,14 +59,13 @@ export const InputController = <T extends FieldValues>({
             {label && <FormLabel>{label}</FormLabel>}
             <FormControl className="w-full">
               <div className="relative">
-                <Input
+                <Textarea
                   placeholder={placeholder}
                   {...field}
                   {...rest}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  type={type}
-                  className={cn("w-full shadow-lg", className)}
+                  className={cn("w-full", className)}
                 />
                 {rest.btnIcon && (
                   <Button

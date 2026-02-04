@@ -21,8 +21,10 @@ import {
   CommandList,
 } from "../ui/command";
 
-interface ComboboxController<T extends FieldValues, O extends FieldValues>
-  extends React.HTMLAttributes<HTMLSelectElement> {
+interface ComboboxController<
+  T extends FieldValues,
+  O extends FieldValues,
+> extends React.HTMLAttributes<HTMLSelectElement> {
   name: Path<T>;
   control: Control<T>;
   label?: string;
@@ -31,54 +33,81 @@ interface ComboboxController<T extends FieldValues, O extends FieldValues>
   formDescription?: React.ReactNode;
   returnVal?: keyof O;
   listDisplay?: keyof O;
+  disabled?: boolean;
+  containerClassName?: string;
+  inputPlaceholder?: string;
 }
 
 const ComboboxController = <T extends FieldValues, O extends FieldValues>(
-  props: ComboboxController<T, O>
+  props: ComboboxController<T, O>,
 ) => {
+  const [open, setOpen] = React.useState(false);
+  const buttonRef = React.useRef<HTMLButtonElement | null>(null);
+
   const form = useFormContext();
+
+  const buttonWidth = `${Number(buttonRef.current?.offsetWidth || 0)}px`;
+
   return (
     <FormField
       control={props.control}
       name={props.name}
+      disabled={props.disabled}
       render={({ field }) => (
-        <FormItem className="flex flex-col">
-          <FormLabel>Language</FormLabel>
-          <Popover>
+        <FormItem className={cn("flex flex-col", props.containerClassName)}>
+          <FormLabel>{props.label}</FormLabel>
+          <Popover onOpenChange={setOpen} open={open} modal>
             <PopoverTrigger asChild>
               <FormControl>
                 <Button
                   variant="outline"
                   role="combobox"
                   className={cn(
-                    "w-[200px] justify-between",
-                    !field.value && "text-muted-foreground"
+                    "w-full justify-between shadow-lg",
+                    !field.value && "text-muted-foreground",
                   )}
+                  ref={buttonRef}
+                  onClick={() => setOpen((p) => !p)}
+                  disabled={props.disabled}
                 >
                   {field.value
-                    ? props.options.find(
-                        (option) => option.value === field.value
+                    ? props.options.find((option) =>
+                        option?.value.includes(field.value),
                       )?.label
-                    : props.placeHolder ?? "Select " + props.name}
+                    : (props.placeHolder ?? "Select " + props.name)}
                   <ChevronsUpDown className="opacity-50" />
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0">
+            <PopoverContent
+              className={cn("p-0")}
+              style={{ width: `${buttonWidth}` }}
+            >
               <Command>
                 <CommandInput
-                  placeholder="Search framework..."
+                  placeholder={
+                    props.inputPlaceholder ??
+                    `Search ${props.label ?? props.name}...`
+                  }
                   className="h-9"
                 />
                 <CommandList>
-                  <CommandEmpty>No framework found.</CommandEmpty>
+                  <CommandEmpty>
+                    No {props.label ?? props.name} found.
+                  </CommandEmpty>
                   <CommandGroup>
                     {props.options.map((option) => (
                       <CommandItem
                         value={option.label}
                         key={option.value}
                         onSelect={() => {
-                          form.setValue(props.name, option.value);
+                          if (option.value == field.value) {
+                            form.resetField(props.name);
+                          } else {
+                            form.setValue(props.name, option.value);
+                          }
+                          form.trigger(props.name);
+                          setOpen(false);
                         }}
                       >
                         {option.label}
@@ -87,7 +116,7 @@ const ComboboxController = <T extends FieldValues, O extends FieldValues>(
                             "ml-auto",
                             option.value === field.value
                               ? "opacity-100"
-                              : "opacity-0"
+                              : "opacity-0",
                           )}
                         />
                       </CommandItem>
@@ -98,7 +127,7 @@ const ComboboxController = <T extends FieldValues, O extends FieldValues>(
             </PopoverContent>
           </Popover>
           <FormDescription>{props.formDescription}</FormDescription>
-          <FormMessage />
+          <FormMessage className="" />
         </FormItem>
       )}
     />

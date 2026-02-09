@@ -66,11 +66,11 @@ function WOSResponse() {
       CorrespondenceBy: userId!,
       CorrespondenceChoice: "A",
       CorrespondenceToRole: "LOGO",
-      CorrespondenceType: "",
+      CorrespondenceType: data.correspondenceType,
       DocumentType: null,
       PrimaryKeyValue: String(wosserial),
       Remarks: data.text,
-      RoleName: "NLAO",
+      RoleName: selectedRole!,
       StationCode: stationcode!,
     };
     await mutaion.mutateAsync(d);

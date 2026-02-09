@@ -6,22 +6,22 @@ import { useSelector } from "react-redux";
 import { selectUser } from "@/store/slices/auth";
 
 const Layout = React.memo(() => {
-  const user = useSelector(selectUser);
-  const navigate = useNavigate();
-  React.useEffect(() => {
-    if (!user) {
-      navigate("/auth/login");
-    }
-  }, [user, navigate]);
+    const user = useSelector(selectUser);
+    const navigate = useNavigate();
+    React.useEffect(() => {
+        if (!user) {
+            navigate("/auth/login");
+        }
+    }, [user, navigate]);
 
-  return (
-    <SidebarProvider defaultOpen className="h-screen">
-      <AppSidebar />
-      <SidebarInset className="h-full">
-        <Outlet />
-      </SidebarInset>
-    </SidebarProvider>
-  );
+    return (
+        <SidebarProvider defaultOpen className="h-screen">
+            <AppSidebar />
+            <SidebarInset className="h-full">
+                <Outlet />
+            </SidebarInset>
+        </SidebarProvider>
+    );
 });
 
 export default Layout;

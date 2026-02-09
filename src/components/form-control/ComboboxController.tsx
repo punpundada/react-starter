@@ -80,7 +80,7 @@ const ComboboxController = <T extends FieldValues, O extends FieldValues>(
               </FormControl>
             </PopoverTrigger>
             <PopoverContent
-              className={cn("p-0")}
+              className={cn(`p-0`)}
               style={{ width: `${buttonWidth}` }}
             >
               <Command>

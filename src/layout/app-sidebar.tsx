@@ -30,8 +30,10 @@ import {
   SidebarMenuSubItem,
   SidebarMenuSub,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 import { authActions } from "@/store/slices/auth";
 import { useAppSelector } from "@/store/store";
+import { tr } from "date-fns/locale";
 
 import {
   ChevronDown,
@@ -51,6 +53,7 @@ import {
 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 type SideBarItem = {
   title: string;
   icon: React.ForwardRefExoticComponent<
@@ -58,6 +61,7 @@ type SideBarItem = {
   >;
   url: string;
   children?: SideBarItem[];
+  allowedRoles?: string[] | "ALL";
 };
 const items: SideBarItem[] = [
   {
@@ -69,6 +73,7 @@ const items: SideBarItem[] = [
     title: "WOS",
     icon: Ship,
     url: "/wos",
+    allowedRoles: ["NLAO"],
   },
   // {
   //   title: "Groups",
@@ -108,6 +113,7 @@ const AppSidebar = () => {
   const { setTheme, theme } = useTheme();
   const name = useAppSelector((s) => s.authReducer.user?.name);
   const roles = useAppSelector((s) => s.authReducer.user?.roles);
+  const selectedRole = useAppSelector((s) => s.authReducer.user?.selectedRole);
 
   const onSignout = () => {
     dispatch(authActions.signout());
@@ -116,6 +122,23 @@ const AppSidebar = () => {
 
   const changeRole = (role: string) => {
     dispatch(authActions.changeRole(role));
+  };
+
+  const shouldAllow = (allowedRoles?: string[] | "ALL") => {
+    if (!allowedRoles) return true;
+    if (allowedRoles === "ALL") return true;
+    if (selectedRole && allowedRoles.includes(selectedRole)) return true;
+    return false;
+  };
+
+  const disableLink = (
+    isAllowed: boolean,
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    if (!isAllowed) {
+      e.preventDefault();
+      toast.error("You are not authorized to access this page");
+    }
   };
 
   return (
@@ -133,10 +156,20 @@ const AppSidebar = () => {
             <SidebarGroupContent>
               <SidebarMenu>
                 {items.map((item) => {
+                  const isAllowed = shouldAllow(item.allowedRoles);
                   return !item?.children?.length ? (
                     <SidebarMenuItem key={item.title} className="my-2">
-                      <SidebarMenuButton asChild>
-                        <Link to={item.url ? item.url : ""}>
+                      <SidebarMenuButton
+                        asChild
+                        disabled={!isAllowed}
+                        className={cn("", {
+                          "hover:cursor-not-allowed": !isAllowed,
+                        })}
+                      >
+                        <Link
+                          to={item.url ? item.url : ""}
+                          onClick={(e) => disableLink(isAllowed, e)}
+                        >
                           {item.icon && <item.icon />}
                           <span>{item.title}</span>
                         </Link>
@@ -154,10 +187,26 @@ const AppSidebar = () => {
                         <CollapsibleContent>
                           <SidebarMenuSub>
                             {item.children.map((child) => {
+                              const isChildAllowed = shouldAllow(
+                                child.allowedRoles,
+                              );
+                              console.log("isChildAllowed", isChildAllowed);
                               return (
                                 <SidebarMenuSubItem key={child.title}>
-                                  <SidebarMenuButton asChild>
-                                    <Link to={child.url}>
+                                  <SidebarMenuButton
+                                    asChild
+                                    disabled={!isChildAllowed}
+                                    className={cn("", {
+                                      "hover:cursor-not-allowed":
+                                        !isChildAllowed,
+                                    })}
+                                  >
+                                    <Link
+                                      to={child.url}
+                                      onClick={(e) =>
+                                        disableLink(isChildAllowed, e)
+                                      }
+                                    >
                                       <child.icon />
                                       <span>{child.title}</span>
                                     </Link>

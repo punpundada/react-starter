@@ -3,11 +3,11 @@ import DateController from "@/components/form-control/DateController";
 import Pagination from "@/components/Pagination";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { useWOSMasterList } from "@/hooks/wos/wos-hooks";
@@ -21,123 +21,131 @@ import { useForm } from "react-hook-form";
 import { Link, useSearchParams } from "react-router-dom";
 
 const breadcrumList = [
-  { name: "Dashboard", path: "/" },
-  { name: "WOS", path: "wos" },
+    { name: "Dashboard", path: "/" },
+    { name: "WOS", path: "wos" },
 ];
 
 const columns: ExtendedColumnDef<WOSMasterType>[] = [
-  {
-    accessorKey: "WOSSerial",
-    header: "WOS Serial",
-    cell: ({ row }) => {
-      return (
-        <Link
-          className="text-blue-600 hover:underline"
-          to={`/wos/${row.original.WOSSerial}?page=1`}
-        >
-          {row.original.WOSSerial}
-        </Link>
-      );
+    {
+        accessorKey: "WOSSerial",
+        header: "WOS Serial",
+        cell: ({ row }) => {
+            return (
+                <Link
+                    className="text-blue-600 hover:underline"
+                    to={`/wos/${row.original.WOSSerial}?page=1`}
+                >
+                    {row.original.WOSSerial}
+                </Link>
+            );
+        },
     },
-  },
-  {
-    accessorKey: "WOSType",
-    header: "WOS Type",
-  },
-  {
-    accessorKey: "CustomerCode",
-    header: "Customer Code",
-  },
-  {
-    accessorKey: "InitiatedBy",
-    header: "Initiated By",
-  },
-  {
-    accessorKey: "DateTimeInitiated",
-    header: "Initiated Date",
-  },
-  {
-    accessorKey: "ApprovedBy",
-    header: "Approved Date",
-  },
-  {
-    accessorKey: "SanctionNo",
-    header: "Sanction No",
-  },
-  {
-    accessorKey: "SanctionDate",
-    header: "Saction Date",
-  },
-  {
-    accessorKey: "Responce",
-    header: "Action",
-    cell: ({ row }) => {
-      return (
-        <Button asChild>
-          <Link to={`response/${row.original.WOSSerial}`}>Response</Link>
-        </Button>
-      );
+    {
+        accessorKey: "WOSType",
+        header: "WOS Type",
     },
-  },
-  // {
-  //   accessorKey: "ConcurredBy",
-  //   header: "Concurred By",
-  // },
+    {
+        accessorKey: "CustomerCode",
+        header: "Customer Code",
+    },
+    {
+        accessorKey: "InitiatedBy",
+        header: "Initiated By",
+    },
+    {
+        accessorKey: "DateTimeInitiated",
+        header: "Initiated Date",
+    },
+    {
+        accessorKey: "ApprovedBy",
+        header: "Approved Date",
+    },
+    {
+        accessorKey: "SanctionNo",
+        header: "Sanction No",
+    },
+    {
+        accessorKey: "SanctionDate",
+        header: "Saction Date",
+    },
+    {
+        accessorKey: "Responce",
+        header: "Action",
+        cell: ({ row }) => {
+            return (
+                <Button asChild>
+                    <Link to={`response/${row.original.WOSSerial}`}>Response</Link>
+                </Button>
+            );
+        },
+    },
+    // {
+    //   accessorKey: "ConcurredBy",
+    //   header: "Concurred By",
+    // },
 ];
 
 const WarrentOfStores = () => {
-  const [searchParams] = useSearchParams();
-  const page = getPageParam(searchParams);
-  const stationCode = useAppSelector((s) => s.authReducer?.user?.stationCode);
+    const [searchParams] = useSearchParams();
+    const page = getPageParam(searchParams);
+    const stationCode = useAppSelector((s) => s.authReducer?.user?.stationCode);
 
-  const form = useForm<WOSMaterServiceParams>({
-    defaultValues: {
-      customer_code: undefined,
-      from_date: undefined,
-      station_code: stationCode,
-      to_date: undefined,
-    },
-  });
-  const wosQuery = useWOSMasterList(form.watch());
+    const form = useForm<WOSMaterServiceParams>({
+        defaultValues: {
+            customer_code: undefined,
+            from_date: undefined,
+            station_code: stationCode,
+            to_date: undefined,
+        },
+    });
+    const wosQuery = useWOSMasterList(form.watch());
 
-  return (
-    <PageLayout breadcrumList={breadcrumList} title="ILMS">
-      <Card className="h-full">
-        <CardHeader>
-          <CardTitle>WOS</CardTitle>
-          <CardDescription>WOS Master List</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Form {...form}>
-            <form className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              <DateController
-                control={form.control}
-                name="from_date"
-                placeholder="From Date"
-                label="From Date"
-                displayFormat={{
-                  hour12: "dd-MM-YYYY",
-                }}
-              />
-              <DateController
-                control={form.control}
-                name="to_date"
-                placeholder="To Date"
-                label="To Date"
-              />
-            </form>
-          </Form>
-          <DataTable
-            columns={columns}
-            data={wosQuery.data ?? []}
-            loading={wosQuery.isLoading}
-            maxHeight="350px"
-          />
-          <Pagination page={page} pageCount={1} />
-        </CardContent>
-      </Card>
-    </PageLayout>
-  );
+    const getClassName = (row: WOSMasterType) => {
+        if (row.ApprovedBy) {
+            return "bg-green-100 hover:bg-green-200 transition-colors duration-[200ms]";
+        }
+        return "";
+    };
+
+    return (
+        <PageLayout breadcrumList={breadcrumList} title="ILMS">
+            <Card className="h-full">
+                <CardHeader>
+                    <CardTitle>WOS</CardTitle>
+                    <CardDescription>WOS Master List</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <Form {...form}>
+                        <form className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            <DateController
+                                control={form.control}
+                                name="from_date"
+                                placeholder="From Date"
+                                label="From Date"
+                                displayFormat={{
+                                    hour12: "dd-MM-YYYY",
+                                }}
+                            />
+                            <DateController
+                                control={form.control}
+                                name="to_date"
+                                placeholder="To Date"
+                                label="To Date"
+                            />
+                        </form>
+                    </Form>
+                    <DataTable
+                        columns={columns}
+                        data={wosQuery.data ?? []}
+                        loading={wosQuery.isLoading}
+                        maxHeight="350px"
+                        getRowClassName={getClassName}
+                    />
+                    <Pagination page={page} pageCount={1} />
+                </CardContent>
+            </Card>
+        </PageLayout>
+    );
 };
 
 export default WarrentOfStores;

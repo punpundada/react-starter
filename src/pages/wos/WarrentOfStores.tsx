@@ -17,6 +17,7 @@ import { WOSMaterServiceParams } from "@/services/wos/wos-service";
 import { useAppSelector } from "@/store/store";
 import { ExtendedColumnDef } from "@/type/utils";
 import { WOSMasterType } from "@/type/wos/wos-types";
+import { format, isValid } from "date-fns";
 import { useForm } from "react-hook-form";
 import { Link, useSearchParams } from "react-router-dom";
 
@@ -85,6 +86,18 @@ const columns: ExtendedColumnDef<WOSMasterType>[] = [
     // },
 ];
 
+
+const formatToISODate = (dateInput?: string | Date): string | undefined => {
+    if (!dateInput) return undefined;
+    const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+
+    if (!isValid(date)) {
+        throw new Error("Invalid date provided");
+    }
+
+    return format(date, 'yyyy-MM-dd');
+};
+
 const WarrentOfStores = () => {
     const [searchParams] = useSearchParams();
     const page = getPageParam(searchParams);
@@ -98,7 +111,11 @@ const WarrentOfStores = () => {
             to_date: undefined,
         },
     });
-    const wosQuery = useWOSMasterList(form.watch());
+    const wosQuery = useWOSMasterList({
+        ...form.watch(),
+        from_date: formatToISODate(form.watch("from_date")),
+        to_date: formatToISODate(form.watch("to_date"))
+    });
 
     const getClassName = (row: WOSMasterType) => {
         if (row.ApprovedBy) {

@@ -96,6 +96,7 @@ function WOSLine() {
         {
             accessorKey: "ItemDesc",
             header: "Item Desc",
+            className: "text-sm"
         },
         {
             accessorKey: "ItemDeno",
@@ -158,10 +159,13 @@ function WOSLine() {
         {
             accessorKey: "TotalCost",
             header: "Total Cost",
-            cell: ({ row }) =>
-                (Number(row.original.VettedQty) * Number(row.original.Price)).toFixed(
+            cell: ({ row }) => {
+                const tp = (Number(row.original.VettedQty) * Number(row.original.Price)).toFixed(
                     4,
-                ),
+                )
+                // form.setValue(`Lines.${row.index}.TotalCost`, Number(tp))
+                return tp
+            }
         },
         {
             accessorKey: "AuthorityDate",
@@ -185,7 +189,11 @@ function WOSLine() {
     }
 
     React.useEffect(() => {
-        form.setValue("Lines", wosLineQuery.data ?? []);
+        const data = wosLineQuery.data?.map((x) => {
+            x.TotalCost = Number((x.VettedQty * x.Price).toFixed(4))
+            return x
+        })
+        form.setValue("Lines", data ?? []);
     }, [form, wosLineQuery.data]);
 
     return (
@@ -214,6 +222,13 @@ function WOSLine() {
                                 maxHeight="350px"
                             />
                             <Pagination page={page} pageCount={1} />
+                            <div className="flex justify-end gap-4">
+                                <span>Total Cost :</span> <span className="font-semibold underline">
+                                    {(form.watch("Lines").reduce(
+                                        (sum, item) => sum + item.TotalCost, 0)).toFixed(4)
+                                    }
+                                </span>
+                            </div>
                             <div className="flex justify-end gap-4">
                                 <Button
                                     type="button"

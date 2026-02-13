@@ -1,4 +1,5 @@
 import { useTheme } from "@/components/theme-provider";
+import { Button } from "@/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
@@ -144,12 +145,31 @@ const filterItems = (items: SideBarItem[], query: string): SideBarItem[] => {
     .filter(Boolean) as SideBarItem[];
 };
 
+const handleKeyNav = (e: React.KeyboardEvent<HTMLUListElement>) => {
+  const items = Array.from(
+    document.querySelectorAll("[data-menu-item]"),
+  ) as HTMLElement[];
+
+  const index = items.indexOf(document.activeElement as HTMLElement);
+
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    items[index + 1]?.focus();
+  }
+
+  if (e.key === "ArrowUp") {
+    e.preventDefault();
+    items[index - 1]?.focus();
+  }
+};
+
 const AppSidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { setTheme, theme } = useTheme();
 
   const [query, setQuery] = React.useState("");
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   const name = useAppSelector((s) => s.authReducer.user?.name);
   const roles = useAppSelector((s) => s.authReducer.user?.roles);
@@ -182,6 +202,29 @@ const AppSidebar = () => {
     }
   };
 
+  React.useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      // Ctrl + K
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+
+      // "/" shortcut
+      if (e.key === "/" && document.activeElement !== inputRef.current) {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+      if (e.key === "Escape") {
+        setQuery("");
+        inputRef.current?.blur();
+      }
+    };
+
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
   return (
     <Sidebar
       variant="sidebar"
@@ -189,12 +232,13 @@ const AppSidebar = () => {
       className="bg-accent z-30"
     >
       <SidebarHeader>
-        <div className="p-2">
-          <Command className="rounded-lg border">
+        <div className="p-2 ">
+          <Command className="rounded-lg border focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition">
             <CommandInput
               placeholder="Search menu..."
               value={query}
               onValueChange={setQuery}
+              ref={inputRef}
             />
           </Command>
         </div>
@@ -205,7 +249,7 @@ const AppSidebar = () => {
           <SidebarGroup>
             {/* <SidebarGroupLabel>ILMS Menu</SidebarGroupLabel> */}
             <SidebarGroupContent>
-              <SidebarMenu>
+              <SidebarMenu onKeyDown={handleKeyNav}>
                 {filteredItems.map((item) => {
                   const isAllowed = shouldAllow(item.allowedRoles);
                   return !item?.children?.length ? (
@@ -217,23 +261,32 @@ const AppSidebar = () => {
                           "hover:cursor-not-allowed": !isAllowed,
                         })}
                       >
-                        <Link
-                          to={item.url ? item.url : ""}
-                          onClick={(e) => disableLink(isAllowed, e)}
+                        <Button
+                          asChild
+                          variant="ghost"
+                          className="w-full justify-start"
+                          aria-expanded={shouldAutoOpen(item, query)}
+                          aria-controls={`submenu-${item.title}`}
                         >
-                          {item.icon && <item.icon />}
-                          <span>
-                            {item.title
-                              .split(new RegExp(`(${query})`, "gi"))
-                              .map((part, i) =>
-                                part.toLowerCase() === query.toLowerCase() ? (
-                                  <mark key={i}>{part}</mark>
-                                ) : (
-                                  part
-                                ),
-                              )}
-                          </span>
-                        </Link>
+                          <Link
+                            to={item.url ? item.url : ""}
+                            onClick={(e) => disableLink(isAllowed, e)}
+                            data-menu-item
+                          >
+                            {item.icon && <item.icon />}
+                            <span>
+                              {item.title
+                                .split(new RegExp(`(${query})`, "gi"))
+                                .map((part, i) =>
+                                  part.toLowerCase() === query.toLowerCase() ? (
+                                    <mark key={i}>{part}</mark>
+                                  ) : (
+                                    part
+                                  ),
+                                )}
+                            </span>
+                          </Link>
+                        </Button>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   ) : (
@@ -243,14 +296,22 @@ const AppSidebar = () => {
                       open={shouldAutoOpen(item, query) || undefined}
                     >
                       <SidebarMenuItem>
-                        <CollapsibleTrigger asChild>
+                        <CollapsibleTrigger
+                          asChild
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              e.currentTarget.click();
+                            }
+                          }}
+                        >
                           <SidebarMenuButton>
                             {item.title}
                             <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
                           </SidebarMenuButton>
                         </CollapsibleTrigger>
                         <CollapsibleContent>
-                          <SidebarMenuSub>
+                          <SidebarMenuSub id={`submenu-${item.title}`}>
                             {item.children.map((child) => {
                               const isChildAllowed = shouldAllow(
                                 child.allowedRoles,
@@ -265,26 +326,36 @@ const AppSidebar = () => {
                                         !isChildAllowed,
                                     })}
                                   >
-                                    <Link
-                                      to={child.url}
-                                      onClick={(e) =>
-                                        disableLink(isChildAllowed, e)
-                                      }
+                                    <Button
+                                      asChild
+                                      variant="ghost"
+                                      className="w-full flex justify-start"
+                                      data-menu-item
                                     >
-                                      <child.icon />
-                                      <span>
-                                        {child.title
-                                          .split(new RegExp(`(${query})`, "gi"))
-                                          .map((part, i) =>
-                                            part.toLowerCase() ===
-                                            query.toLowerCase() ? (
-                                              <mark key={i}>{part}</mark>
-                                            ) : (
-                                              part
-                                            ),
-                                          )}
-                                      </span>
-                                    </Link>
+                                      <Link
+                                        to={child.url}
+                                        onClick={(e) =>
+                                          disableLink(isChildAllowed, e)
+                                        }
+                                        data-menu-item
+                                      >
+                                        <child.icon />
+                                        <span>
+                                          {child.title
+                                            .split(
+                                              new RegExp(`(${query})`, "gi"),
+                                            )
+                                            .map((part, i) =>
+                                              part.toLowerCase() ===
+                                              query.toLowerCase() ? (
+                                                <mark key={i}>{part}</mark>
+                                              ) : (
+                                                part
+                                              ),
+                                            )}
+                                        </span>
+                                      </Link>
+                                    </Button>
                                   </SidebarMenuButton>
                                 </SidebarMenuSubItem>
                               );
@@ -368,3 +439,14 @@ const AppSidebar = () => {
 };
 
 export default AppSidebar;
+
+/*
+type SearchBooksParams struct {
+	MinBookID     int32       `json:"min_book_id"`
+	AuthorID      interface{} `json:"author_id"`
+	TitleSearch   interface{} `json:"title_search"`
+	OnlyAvailable interface{} `json:"only_available"`
+	LimitCount    int32       `json:"limit_count"`
+}
+
+*/
